@@ -9,11 +9,8 @@ using System.Transactions;
 
 namespace RegisterRescueRS.Domain.Application.Services;
 
-public class FamilyService(FamilyRepository mainRepository, ShelterRepository shelterRepository, HousedRepository housedRepository) : BaseService<FamilyRepository>(mainRepository), IService
+public class FamilyService(IServiceProvider serviceProvider) : BaseService(serviceProvider), IService
 {
-    private ShelterRepository shelterRepository = shelterRepository;
-    private HousedRepository _housedRepository = housedRepository;
-
     public async Task<ActionResult<IEnumerable<FamilyCardDTO>>> ListFamilies(int page, int size, string searchTerm, string authToken)
     {
         if (page < 1)
@@ -37,7 +34,8 @@ public class FamilyService(FamilyRepository mainRepository, ShelterRepository sh
                 DebugMessage = "Invalid Token"
             });
 
-        var families = await this._mainRepository.ListFamilies(page, size, searchTerm, shelterId);
+        var families = await this._serviceProvider.GetRequiredService<FamilyRepository>()
+            .ListFamilies(page, size, searchTerm, shelterId);
 
         return new OkObjectResult(families.Select(x => new FamilyCardDTO
         {
@@ -56,7 +54,8 @@ public class FamilyService(FamilyRepository mainRepository, ShelterRepository sh
                 DebugMessage = "Invalid Token"
             });
 
-        var shelter = await this.shelterRepository.GetShelterById(shelterId);
+        var shelter = await this._serviceProvider.GetRequiredService<ShelterRepository>()
+            .GetShelterById(shelterId);
         if (shelter == null)
             return new BadRequestObjectResult(new ResponseDTO
             {
@@ -107,7 +106,8 @@ public class FamilyService(FamilyRepository mainRepository, ShelterRepository sh
 
         using (TransactionScope ts = new(TransactionScopeAsyncFlowOption.Enabled))
         {
-            family = await this._mainRepository.InsertOrUpdate(family);
+            family = await this._serviceProvider.GetRequiredService<FamilyRepository>()
+                .InsertOrUpdate(family);
 
             var houseds = dto.Houseds
                 .Where(x => !x.Responsable)
@@ -125,7 +125,8 @@ public class FamilyService(FamilyRepository mainRepository, ShelterRepository sh
             temp.Add(responsable);
             houseds = temp;
 
-            await this._housedRepository.InsertRange(houseds);
+            await this._serviceProvider.GetRequiredService<HousedRepository>()
+                .InsertRange(houseds);
 
             ts.Complete();
         }
@@ -146,7 +147,8 @@ public class FamilyService(FamilyRepository mainRepository, ShelterRepository sh
                 DebugMessage = "Family not found"
             });
 
-        var family = await this._mainRepository.GetFamilyById(familyId);
+        var family = await this._serviceProvider.GetRequiredService<FamilyRepository>()
+            .GetFamilyById(familyId);
 
         if (family == null)
             return new BadRequestObjectResult(new ResponseDTO

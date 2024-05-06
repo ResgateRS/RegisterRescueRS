@@ -10,7 +10,7 @@ using System.Text;
 
 namespace RegisterRescueRS.Domain.Application.Services;
 
-public class LoginService(ShelterRepository userRepository) : BaseService<ShelterRepository>(userRepository), IService
+public class LoginService(IServiceProvider serviceProvider) : BaseService(serviceProvider), IService
 {
     public async Task<ActionResult<LoginResponseDTO>> handle(LoginRequestDTO dto)
     {
@@ -28,7 +28,8 @@ public class LoginService(ShelterRepository userRepository) : BaseService<Shelte
                 Message = "An error occurred, try again!"
             });
 
-        var shelter = await this._mainRepository.GetShelter(dto.Login, GetMd5Hash(dto.Password));
+        var shelter = await this._serviceProvider.GetRequiredService<ShelterRepository>()
+            .GetShelter(dto.Login, GetMd5Hash(dto.Password));
 
         if (shelter == null)
             return new BadRequestObjectResult(new ResponseDTO
@@ -94,7 +95,8 @@ public class LoginService(ShelterRepository userRepository) : BaseService<Shelte
             ShelterName = dto.Name
         };
 
-        await this._mainRepository.InsertOrUpdate(entity);
+        await this._serviceProvider.GetRequiredService<ShelterRepository>()
+            .InsertOrUpdate(entity);
 
         return new OkObjectResult(new ResponseDTO
         {

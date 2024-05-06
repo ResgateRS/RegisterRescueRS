@@ -10,15 +10,12 @@ namespace RegisterRescueRS.Presenter.Controllers;
 
 [BaseControllerExceptionFilterAttribute]
 [AuthenticationFilterAttribute]
-public class BaseController<Service, IServiceProvider> : ControllerBase
+public class BaseController : ControllerBase
 {
-    protected readonly Service mainService;
     protected readonly IServiceProvider serviceProvider;
 
-
-    public BaseController(Service service, IServiceProvider serviceProvider)
+    public BaseController(IServiceProvider serviceProvider)
     {
-        this.mainService = service;
         this.serviceProvider = serviceProvider;
     }
 

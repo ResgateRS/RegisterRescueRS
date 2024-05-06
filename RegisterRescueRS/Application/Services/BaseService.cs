@@ -1,18 +1,10 @@
 ﻿namespace RegisterRescueRS.Domain.Application.Services
 {
-    public class BaseService<Repository>
+    public class BaseService
     {
-        protected readonly Repository _mainRepository;
+        protected readonly IServiceProvider _serviceProvider;
 
-        public BaseService(Repository repository) { this._mainRepository = repository; }
-
-        public string GetExceptionMessage(Exception ex)
-        {
-            if (ex.InnerException == null)
-                return ex.Message;
-
-            return GetExceptionMessage(ex);
-        }
+        public BaseService(IServiceProvider serviceProvider) { this._serviceProvider = serviceProvider; }
     }
 }
 
