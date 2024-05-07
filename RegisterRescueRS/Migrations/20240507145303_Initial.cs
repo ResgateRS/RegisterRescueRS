@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RegisterRescueRS.Infrastructure.Database.Migrations
+namespace RegisterRescueRS.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -18,11 +18,37 @@ namespace RegisterRescueRS.Infrastructure.Database.Migrations
                     ShelterId = table.Column<Guid>(type: "RAW(16)", nullable: false),
                     Login = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
                     Password = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
-                    ShelterName = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false)
+                    ShelterName = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
+                    Address = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Shelters", x => x.ShelterId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShelterNeeds",
+                columns: table => new
+                {
+                    ShelterNeedsId = table.Column<Guid>(type: "RAW(16)", nullable: false),
+                    ShelterId = table.Column<Guid>(type: "RAW(16)", nullable: false),
+                    AcceptingVolunteers = table.Column<int>(type: "NUMBER(10)", nullable: false),
+                    AcceptingDoctors = table.Column<int>(type: "NUMBER(10)", nullable: false),
+                    AcceptingVeterinarians = table.Column<int>(type: "NUMBER(10)", nullable: false),
+                    AcceptingDonations = table.Column<int>(type: "NUMBER(10)", nullable: false),
+                    DonationDescription = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
+                    VolunteersSubscriptionLink = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "TIMESTAMP(7) WITH TIME ZONE", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShelterNeeds", x => x.ShelterNeedsId);
+                    table.ForeignKey(
+                        name: "FK_ShelterNeeds_Shelters_ShelterId",
+                        column: x => x.ShelterId,
+                        principalTable: "Shelters",
+                        principalColumn: "ShelterId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,7 +80,7 @@ namespace RegisterRescueRS.Infrastructure.Database.Migrations
                     FamilyId = table.Column<Guid>(type: "RAW(16)", nullable: false),
                     Name = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
                     Age = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    Cellphone = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
+                    Cellphone = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
                     IsFamilyResponsable = table.Column<int>(type: "NUMBER(10)", nullable: false),
                     FamilyResponsableId = table.Column<Guid>(type: "RAW(16)", nullable: false),
                     RegisteredAt = table.Column<DateTimeOffset>(type: "TIMESTAMP(7) WITH TIME ZONE", nullable: false),
@@ -87,6 +113,12 @@ namespace RegisterRescueRS.Infrastructure.Database.Migrations
                 table: "Houseds",
                 column: "FamilyId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_ShelterNeeds_ShelterId",
+                table: "ShelterNeeds",
+                column: "ShelterId",
+                unique: true);
+
             migrationBuilder.AddForeignKey(
                 name: "FK_Families_Houseds_ResponsableId",
                 table: "Families",
@@ -102,6 +134,9 @@ namespace RegisterRescueRS.Infrastructure.Database.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Families_Houseds_ResponsableId",
                 table: "Families");
+
+            migrationBuilder.DropTable(
+                name: "ShelterNeeds");
 
             migrationBuilder.DropTable(
                 name: "Houseds");

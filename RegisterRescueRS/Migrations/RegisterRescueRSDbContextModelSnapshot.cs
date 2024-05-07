@@ -2,21 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 using RegisterRescueRS.Infrastructure.Database;
 
 #nullable disable
 
-namespace RegisterRescueRS.Infrastructure.Database.Migrations
+namespace RegisterRescueRS.Migrations
 {
     [DbContext(typeof(RegisterRescueRSDbContext))]
-    [Migration("20240507010623_Initial")]
-    partial class Initial
+    partial class RegisterRescueRSDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,7 +60,6 @@ namespace RegisterRescueRS.Infrastructure.Database.Migrations
                         .HasColumnType("NUMBER(10)");
 
                     b.Property<string>("Cellphone")
-                        .IsRequired()
                         .HasColumnType("NVARCHAR2(2000)");
 
                     b.Property<Guid>("FamilyId")
@@ -98,6 +94,10 @@ namespace RegisterRescueRS.Infrastructure.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("RAW(16)");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
                     b.Property<string>("Login")
                         .IsRequired()
                         .HasColumnType("NVARCHAR2(2000)");
@@ -113,6 +113,44 @@ namespace RegisterRescueRS.Infrastructure.Database.Migrations
                     b.HasKey("ShelterId");
 
                     b.ToTable("Shelters");
+                });
+
+            modelBuilder.Entity("RegisterRescueRS.Domain.Application.Entities.ShelterNeedsEntity", b =>
+                {
+                    b.Property<Guid>("ShelterNeedsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("RAW(16)");
+
+                    b.Property<int>("AcceptingDoctors")
+                        .HasColumnType("NUMBER(10)");
+
+                    b.Property<int>("AcceptingDonations")
+                        .HasColumnType("NUMBER(10)");
+
+                    b.Property<int>("AcceptingVeterinarians")
+                        .HasColumnType("NUMBER(10)");
+
+                    b.Property<int>("AcceptingVolunteers")
+                        .HasColumnType("NUMBER(10)");
+
+                    b.Property<string>("DonationDescription")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<Guid>("ShelterId")
+                        .HasColumnType("RAW(16)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TIMESTAMP(7) WITH TIME ZONE");
+
+                    b.Property<string>("VolunteersSubscriptionLink")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.HasKey("ShelterNeedsId");
+
+                    b.HasIndex("ShelterId")
+                        .IsUnique();
+
+                    b.ToTable("ShelterNeeds");
                 });
 
             modelBuilder.Entity("RegisterRescueRS.Domain.Application.Entities.FamilyEntity", b =>
@@ -145,6 +183,17 @@ namespace RegisterRescueRS.Infrastructure.Database.Migrations
                     b.Navigation("Family");
                 });
 
+            modelBuilder.Entity("RegisterRescueRS.Domain.Application.Entities.ShelterNeedsEntity", b =>
+                {
+                    b.HasOne("RegisterRescueRS.Domain.Application.Entities.ShelterEntity", "Shelter")
+                        .WithOne("ShelterNeeds")
+                        .HasForeignKey("RegisterRescueRS.Domain.Application.Entities.ShelterNeedsEntity", "ShelterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shelter");
+                });
+
             modelBuilder.Entity("RegisterRescueRS.Domain.Application.Entities.FamilyEntity", b =>
                 {
                     b.Navigation("Houseds");
@@ -158,6 +207,8 @@ namespace RegisterRescueRS.Infrastructure.Database.Migrations
             modelBuilder.Entity("RegisterRescueRS.Domain.Application.Entities.ShelterEntity", b =>
                 {
                     b.Navigation("Families");
+
+                    b.Navigation("ShelterNeeds");
                 });
 #pragma warning restore 612, 618
         }
