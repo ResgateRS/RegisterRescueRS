@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using RegisterRescueRS.Auth;
 using RegisterRescueRS.Domain.Application.Entities;
 using RegisterRescueRS.Domain.Application.Services.Interfaces;
