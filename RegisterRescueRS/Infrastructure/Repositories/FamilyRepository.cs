@@ -10,7 +10,10 @@ public class FamilyRepository(RegisterRescueRSDbContext dbContext, PaginationDTO
     public async Task<FamilyEntity> InsertOrUpdate(FamilyEntity entity)
     {
         if (entity.FamilyId == Guid.Empty)
+        {
+            entity.FamilyId = Guid.NewGuid();
             await _db.Families.AddAsync(entity);
+        }
         else
             _db.Families.Update(entity);
 

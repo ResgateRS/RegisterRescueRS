@@ -10,7 +10,10 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
     public async Task<ShelterNeedEntity> InsertOrUpdate(ShelterNeedEntity entity)
     {
         if (entity.ShelterId == Guid.Empty)
+        {
+            entity.ShelterNeedId = Guid.NewGuid();
             await this._db.ShelterNeeds.AddAsync(entity);
+        }
         else
             this._db.ShelterNeeds.Update(entity);
 

@@ -16,7 +16,10 @@ public class ShelterRepository(RegisterRescueRSDbContext dbContext) : IRepositor
     public async Task<ShelterEntity> InsertOrUpdate(ShelterEntity user)
     {
         if (user.ShelterId == Guid.Empty)
+        {
+            user.ShelterId = Guid.NewGuid();
             await this._db.Shelters.AddAsync(user);
+        }
         else
             this._db.Shelters.Update(user);
 

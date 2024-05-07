@@ -10,6 +10,8 @@ public class HousedRepository(RegisterRescueRSDbContext dbContext) : IRepository
 
     public async Task InsertRange(IEnumerable<HousedEntity> houseds)
     {
+        houseds.ToList().ForEach(x => x.HousedId = Guid.NewGuid());
+
         await _db.Houseds.AddRangeAsync(houseds);
         await _db.SaveChangesAsync();
     }
