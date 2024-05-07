@@ -49,29 +49,4 @@ public class LoginService(IServiceProvider serviceProvider, UserSession userSess
             return sBuilder.ToString();
         }
     }
-
-    public async Task<IResponse<ResponseDTO>> CreateShelter(CreateShelterDTO dto)
-    {
-        if (string.IsNullOrEmpty(dto.Login))
-            throw new Exception("Login é necessário");
-        if (string.IsNullOrEmpty(dto.Password))
-            throw new Exception("Senha é necessário");
-        if (string.IsNullOrEmpty(dto.Name))
-            throw new Exception("Nome é necessário");
-
-        ShelterEntity entity = new()
-        {
-            Login = dto.Login,
-            Password = GetMd5Hash(dto.Password),
-            ShelterName = dto.Name
-        };
-
-        await this._serviceProvider.GetRequiredService<ShelterRepository>()
-            .InsertOrUpdate(entity);
-
-        return Response<ResponseDTO>.Success(new ResponseDTO
-        {
-            Message = "Shelter created successfully!"
-        });
-    }
 }

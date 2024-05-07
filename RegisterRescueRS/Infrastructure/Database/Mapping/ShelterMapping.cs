@@ -16,5 +16,8 @@ public class ShelterMapping : IEntityTypeConfiguration<ShelterEntity>
         builder.HasMany(e => e.Families)
             .WithOne(x => x.Shelter)
             .HasForeignKey(e => e.ShelterId);
+        builder.HasMany(e => e.ShelterNeeds)
+            .WithOne(x => x.Shelter)
+            .HasForeignKey(e => e.ShelterId);
     }
 }
