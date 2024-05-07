@@ -25,6 +25,7 @@ public class LoginService(IServiceProvider serviceProvider, UserSession userSess
             throw new Exception("Usuário ou senha inválidos");
 
         _userSession.ShelterId = shelter.ShelterId;
+        _userSession.Adm = shelter.Adm;
 
         var jwt = _serviceProvider.GetRequiredService<JwtTool>();
         jwt.setUserData(userSession);
