@@ -16,6 +16,7 @@ public class HousedMapping : IEntityTypeConfiguration<HousedEntity>
             .HasForeignKey(e => e.FamilyId);
         builder.Property(e => e.Name);
         builder.Property(e => e.Age);
+        builder.Property(e => e.Cellphone);
         builder.Property(e => e.IsFamilyResponsable)
             .HasConversion(v => v ? 1 : 0, v => v == 1);
         builder.Property(e => e.RegisteredAt);

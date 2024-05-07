@@ -58,6 +58,7 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
 
         FamilyEntity family = new()
         {
+            FamilyId = dto.FamilyId ?? Guid.Empty,
             ShelterId = _userSession.ShelterId,
             ResponsableId = responsable.HousedId,
             RegisteredAt = DateTimeOffset.Now,
@@ -86,7 +87,7 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
             houseds = temp;
 
             await this._serviceProvider.GetRequiredService<HousedRepository>()
-                .InsertRange(houseds);
+                .UpsertRange(houseds);
 
             ts.Complete();
         }

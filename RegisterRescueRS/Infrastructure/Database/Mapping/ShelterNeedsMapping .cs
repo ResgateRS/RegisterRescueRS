@@ -20,6 +20,7 @@ public class ShelterNeedsMapping : IEntityTypeConfiguration<ShelterNeedsEntity>
         builder.Property(e => e.AcceptingDonations)
             .HasConversion(v => v ? 1 : 0, v => v == 1);
         builder.Property(e => e.DonationDescription);
+        builder.Property(e => e.VolunteersSubscriptionLink);
         builder.Property(e => e.UpdatedAt);
         builder.HasOne(e => e.Shelter)
             .WithOne(x => x.ShelterNeeds)

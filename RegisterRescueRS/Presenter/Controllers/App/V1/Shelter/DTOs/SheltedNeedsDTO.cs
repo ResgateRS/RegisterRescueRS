@@ -9,6 +9,7 @@ public class ShelterNeedsDTO
     public bool AcceptingVeterinarians { get; set; }
     public bool AcceptingDonations { get; set; }
     public string? DonationDescription { get; set; }
+    public string? VolunteersSubscriptionLink { get; set; }
 
     internal static ShelterNeedsDTO FromEntity(ShelterNeedsEntity entity) =>
         new()
@@ -18,6 +19,7 @@ public class ShelterNeedsDTO
             AcceptingDoctors = entity.AcceptingDoctors,
             AcceptingVeterinarians = entity.AcceptingVeterinarians,
             AcceptingDonations = entity.AcceptingDonations,
-            DonationDescription = entity.DonationDescription
+            DonationDescription = entity.DonationDescription,
+            VolunteersSubscriptionLink = entity.VolunteersSubscriptionLink
         };
 }

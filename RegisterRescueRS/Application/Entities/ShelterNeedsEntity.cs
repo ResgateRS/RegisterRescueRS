@@ -9,6 +9,7 @@ public class ShelterNeedsEntity
     public bool AcceptingVeterinarians { get; set; }
     public bool AcceptingDonations { get; set; }
     public string? DonationDescription { get; set; }
+    public string? VolunteersSubscriptionLink { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
 
     public ShelterEntity Shelter { get; set; } = null!;

@@ -6,7 +6,7 @@ public class HousedEntity
     public Guid FamilyId { get; set; }
     public string Name { get; set; } = null!;
     public int Age { get; set; }
-    public string Cellphone { get; set; } = null!;
+    public string? Cellphone { get; set; }
     public bool IsFamilyResponsable { get; set; }
     public Guid FamilyResponsableId { get; set; }
     public DateTimeOffset RegisteredAt { get; set; }

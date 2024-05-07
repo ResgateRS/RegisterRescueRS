@@ -8,8 +8,13 @@ public class HousedRepository(RegisterRescueRSDbContext dbContext) : IRepository
 {
     private readonly RegisterRescueRSDbContext _db = dbContext;
 
-    public async Task InsertRange(IEnumerable<HousedEntity> houseds)
+    public async Task UpsertRange(IEnumerable<HousedEntity> houseds)
     {
+        var query = this._db.Houseds
+            .Where(x => x.FamilyId == houseds.First().FamilyId);
+
+        this._db.Houseds.RemoveRange(query);
+
         houseds.ToList().ForEach(x => x.HousedId = Guid.NewGuid());
 
         await _db.Houseds.AddRangeAsync(houseds);
