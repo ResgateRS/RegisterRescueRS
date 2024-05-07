@@ -108,4 +108,17 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
 
         return Response<FamilyDTO>.Success(FamilyDTO.FromEntity(family));
     }
+
+    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> GlobalListFamilies(string searchTerm)
+    {
+        var families = await this._serviceProvider.GetRequiredService<FamilyRepository>()
+            .GlobalListFamilies(searchTerm);
+
+        return Response<IEnumerable<FamilyCardDTO>>.Success(families.Select(x => new FamilyCardDTO
+        {
+            FamilyId = x.FamilyId,
+            Responsable = x.Responsable.Name,
+            TotalPeopleNumber = x.Houseds.Count()
+        }));
+    }
 }
