@@ -20,9 +20,16 @@ public class FamilyController(IServiceProvider serviceProvider) : BaseController
     [PaginatedRequest("Id da ultima família", PaginationType.Cursor, typeof(Guid))]
     [HttpGet("List")]
     [MapToApiVersion("1.0")]
-    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> ListFamilies(int page, int size, string? searchTerm = null) =>
+    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> ListFamilies(string? searchTerm = null) =>
         await this.serviceProvider.GetRequiredService<FamilyService>()
                 .ListFamilies(searchTerm);
+
+    [PaginatedRequest("Id da ultima família", PaginationType.Cursor, typeof(Guid))]
+    [HttpGet("GlobalList")]
+    [MapToApiVersion("1.0")]
+    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> GlobalListFamilies(string searchTerm) =>
+        await this.serviceProvider.GetRequiredService<FamilyService>()
+                .GlobalListFamilies(searchTerm);
 
     [HttpGet("Details")]
     [MapToApiVersion("1.0")]
