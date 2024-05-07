@@ -8,7 +8,7 @@ namespace RegisterRescueRS.Infrastructure.Database
     {
         public DbSet<FamilyEntity> Families => Set<FamilyEntity>();
         public DbSet<ShelterEntity> Shelters => Set<ShelterEntity>();
-        public DbSet<ShelterNeedEntity> ShelterNeeds => Set<ShelterNeedEntity>();
+        public DbSet<ShelterNeedsEntity> ShelterNeeds => Set<ShelterNeedsEntity>();
         public DbSet<HousedEntity> Houseds => Set<HousedEntity>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -17,6 +17,7 @@ namespace RegisterRescueRS.Infrastructure.Database
 
             modelBuilder.ApplyConfiguration(new FamilyMapping());
             modelBuilder.ApplyConfiguration(new ShelterMapping());
+            modelBuilder.ApplyConfiguration(new ShelterNeedsMapping());
             modelBuilder.ApplyConfiguration(new HousedMapping());
         }
     }

@@ -9,5 +9,5 @@ public class ShelterEntity
     public string Address { get; set; } = null!;
 
     public ICollection<FamilyEntity> Families { get; set; } = [];
-    public ICollection<ShelterNeedEntity> ShelterNeeds { get; set; } = [];
+    public ShelterNeedsEntity ShelterNeeds { get; set; } = null!;
 }

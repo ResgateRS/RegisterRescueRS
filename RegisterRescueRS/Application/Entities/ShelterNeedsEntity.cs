@@ -1,8 +1,8 @@
 namespace RegisterRescueRS.Domain.Application.Entities;
 
-public class ShelterNeedEntity
+public class ShelterNeedsEntity
 {
-    public Guid ShelterNeedId { get; set; }
+    public Guid ShelterNeedsId { get; set; }
     public Guid ShelterId { get; set; }
     public bool AcceptingVolunteers { get; set; }
     public bool AcceptingDoctors { get; set; }

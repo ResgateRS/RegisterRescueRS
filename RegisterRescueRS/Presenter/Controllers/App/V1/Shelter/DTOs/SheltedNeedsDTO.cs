@@ -10,7 +10,7 @@ public class ShelterNeedsDTO
     public bool AcceptingDonations { get; set; }
     public string? DonationDescription { get; set; }
 
-    internal static ShelterNeedsDTO FromEntity(ShelterNeedEntity entity) =>
+    internal static ShelterNeedsDTO FromEntity(ShelterNeedsEntity entity) =>
         new()
         {
             ShelterId = entity.ShelterId,

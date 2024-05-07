@@ -66,7 +66,7 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
             throw new Exception("Abrigo não encontrado");
 
         await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
-            .InsertOrUpdate(new ShelterNeedEntity
+            .InsertOrUpdate(new ShelterNeedsEntity
             {
                 ShelterId = dto.ShelterId,
                 AcceptingVolunteers = dto.AcceptingVolunteers,

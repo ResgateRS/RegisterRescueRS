@@ -7,11 +7,11 @@ namespace RegisterRescueRS.Infrastructure.Repositories;
 
 public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, PaginationDTO pagination) : BaseRepository(dbContext, pagination)
 {
-    public async Task<ShelterNeedEntity> InsertOrUpdate(ShelterNeedEntity entity)
+    public async Task<ShelterNeedsEntity> InsertOrUpdate(ShelterNeedsEntity entity)
     {
         if (entity.ShelterId == Guid.Empty)
         {
-            entity.ShelterNeedId = Guid.NewGuid();
+            entity.ShelterNeedsId = Guid.NewGuid();
             await this._db.ShelterNeeds.AddAsync(entity);
         }
         else
@@ -22,7 +22,7 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
         return entity;
     }
 
-    public async Task<IEnumerable<ShelterNeedEntity>> ListNeeds(bool? acceptingVolunteers)
+    public async Task<IEnumerable<ShelterNeedsEntity>> ListNeeds(bool? acceptingVolunteers)
     {
         DateTimeOffset? lastDate = await this._db.ShelterNeeds
                         .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
