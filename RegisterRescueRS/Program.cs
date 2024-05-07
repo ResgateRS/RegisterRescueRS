@@ -8,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 JwtManager.secret = config["AuthenticationSettings:TokenSecret"]!;
-JwtManager.expiration = Convert.ToInt64(config["AuthenticationSettings:ExpiresInMinutes"]);
 
 try
 {
