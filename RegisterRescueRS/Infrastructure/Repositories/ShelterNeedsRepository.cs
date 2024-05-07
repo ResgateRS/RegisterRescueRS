@@ -22,7 +22,7 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
         return entity;
     }
 
-    public async Task<IEnumerable<ShelterNeedsEntity>> ListNeeds(bool? acceptingVolunteers)
+    public async Task<IEnumerable<ShelterNeedsEntity>> ListDonations()
     {
         DateTimeOffset? lastDate = await this._db.ShelterNeeds
                         .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
@@ -30,7 +30,22 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
                         .FirstOrDefaultAsync();
 
         return await this._db.ShelterNeeds
-            .Where(x => acceptingVolunteers == null || x.AcceptingVolunteers == acceptingVolunteers)
+            .Include(x => x.Shelter)
+            .Where(x => x.AcceptingDonations)
+            .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<ShelterNeedsEntity>> ListVolunteers()
+    {
+        DateTimeOffset? lastDate = await this._db.ShelterNeeds
+                        .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
+                        .Select(x => (DateTimeOffset?)x.UpdatedAt)
+                        .FirstOrDefaultAsync();
+
+        return await this._db.ShelterNeeds
+            .Include(x => x.Shelter)
+            .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers)
             .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
             .ToListAsync();
     }

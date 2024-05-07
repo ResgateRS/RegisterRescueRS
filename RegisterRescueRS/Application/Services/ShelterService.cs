@@ -78,6 +78,7 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
                 AcceptingVeterinarians = dto.AcceptingVeterinarians,
                 AcceptingDonations = dto.AcceptingDonations,
                 DonationDescription = dto.DonationDescription,
+                Avaliable = dto.Avaliable,
                 VolunteersSubscriptionLink = dto.VolunteersSubscriptionLink,
                 UpdatedAt = DateTimeOffset.Now
             });
@@ -88,11 +89,19 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
         });
     }
 
-    public async Task<IResponse<IEnumerable<ShelterNeedsDTO>>> ListNeeds(bool? acceptingVolunteers)
+    public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers()
     {
         var entities = await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
-            .ListNeeds(acceptingVolunteers);
+            .ListVolunteers();
 
-        return Response<IEnumerable<ShelterNeedsDTO>>.Success(entities.Select(ShelterNeedsDTO.FromEntity));
+        return Response<IEnumerable<VolunteerDTO>>.Success(entities.Select(VolunteerDTO.FromEntity));
+    }
+
+    public async Task<IResponse<IEnumerable<DonationDTO>>> ListDonations()
+    {
+        var entities = await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
+            .ListDonations();
+
+        return Response<IEnumerable<DonationDTO>>.Success(entities.Select(DonationDTO.FromEntity));
     }
 }

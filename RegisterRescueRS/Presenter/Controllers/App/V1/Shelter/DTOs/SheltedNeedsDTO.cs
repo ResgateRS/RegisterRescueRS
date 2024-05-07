@@ -8,18 +8,7 @@ public class ShelterNeedsDTO
     public bool AcceptingDoctors { get; set; }
     public bool AcceptingVeterinarians { get; set; }
     public bool AcceptingDonations { get; set; }
+    public bool Avaliable { get; internal set; }
     public string? DonationDescription { get; set; }
     public string? VolunteersSubscriptionLink { get; set; }
-
-    internal static ShelterNeedsDTO FromEntity(ShelterNeedsEntity entity) =>
-        new()
-        {
-            ShelterId = entity.ShelterId,
-            AcceptingVolunteers = entity.AcceptingVolunteers,
-            AcceptingDoctors = entity.AcceptingDoctors,
-            AcceptingVeterinarians = entity.AcceptingVeterinarians,
-            AcceptingDonations = entity.AcceptingDonations,
-            DonationDescription = entity.DonationDescription,
-            VolunteersSubscriptionLink = entity.VolunteersSubscriptionLink
-        };
 }
