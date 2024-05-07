@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using RescueRS.Presenter.Controllers.App.V1.Enums;
+using RegisterRescueRS.Auth;
 using RegisterRescueRS.Domain.Application.Entities;
 using RegisterRescueRS.Domain.Application.Services.Interfaces;
+using RegisterRescueRS.DTOs;
 using RegisterRescueRS.Infrastructure.Repositories;
 using RegisterRescueRS.Presenter.Controllers.App.V1.DTOs;
 using RegisterRescueRS.Tools;
@@ -10,44 +11,27 @@ using System.Text;
 
 namespace RegisterRescueRS.Domain.Application.Services;
 
-public class LoginService(IServiceProvider serviceProvider) : BaseService(serviceProvider), IService
+public class LoginService(IServiceProvider serviceProvider, UserSession userSession) : BaseService(serviceProvider, userSession), IService
 {
-    public async Task<ActionResult<LoginResponseDTO>> handle(LoginRequestDTO dto)
+    public async Task<IResponse<LoginResponseDTO>> handle(LoginRequestDTO dto)
     {
         if (string.IsNullOrEmpty(dto.Login))
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                DebugMessage = "Login é necessário",
-                Message = "An error occurred, try again!"
-            });
+            throw new Exception("Login é necessário");
 
         if (string.IsNullOrEmpty(dto.Password))
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                DebugMessage = "Senha é necessária",
-                Message = "An error occurred, try again!"
-            });
+            throw new Exception("Senha é necessária");
 
         var shelter = await this._serviceProvider.GetRequiredService<ShelterRepository>()
-            .GetShelter(dto.Login, GetMd5Hash(dto.Password));
+            .GetShelter(dto.Login, GetMd5Hash(dto.Password)) ??
+            throw new Exception("Usuário ou senha inválidos");
 
-        if (shelter == null)
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                DebugMessage = "Usuário ou senha inválidos",
-                Message = "An error occurred, try again!"
-            });
+        _userSession.ShelterId = shelter.ShelterId;
 
-        //TODO JWT
-        Dictionary<string, object> claims = new()
-        {
-            { LoginClaimsEnum.ShelterId,  shelter.ShelterId.ToString()},
-        };
+        var jwt = _serviceProvider.GetRequiredService<JwtTool>();
+        jwt.setUserData(userSession);
+        string token = jwt.generateToken();
 
-        return new OkObjectResult(new LoginResponseDTO
-        {
-            Token = JwtManager.GenerateToken(claims)
-        });
+        return Response<LoginResponseDTO>.Success(new LoginResponseDTO { Token = token });
     }
 
     internal static string GetMd5Hash(string input)
@@ -67,26 +51,14 @@ public class LoginService(IServiceProvider serviceProvider) : BaseService(servic
         }
     }
 
-    public async Task<ActionResult> CreateShelter(CreateShelterDTO dto)
+    public async Task<IResponse<ResponseDTO>> CreateShelter(CreateShelterDTO dto)
     {
         if (string.IsNullOrEmpty(dto.Login))
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                DebugMessage = "Login é necessário",
-                Message = "An error occurred, try again!"
-            });
+            throw new Exception("Login é necessário");
         if (string.IsNullOrEmpty(dto.Password))
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                DebugMessage = "Senha é necessário",
-                Message = "An error occurred, try again!"
-            });
+            throw new Exception("Senha é necessário");
         if (string.IsNullOrEmpty(dto.Name))
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                DebugMessage = "Nome é necessário",
-                Message = "An error occurred, try again!"
-            });
+            throw new Exception("Nome é necessário");
 
         ShelterEntity entity = new()
         {
@@ -98,7 +70,7 @@ public class LoginService(IServiceProvider serviceProvider) : BaseService(servic
         await this._serviceProvider.GetRequiredService<ShelterRepository>()
             .InsertOrUpdate(entity);
 
-        return new OkObjectResult(new ResponseDTO
+        return Response<ResponseDTO>.Success(new ResponseDTO
         {
             Message = "Shelter created successfully!"
         });

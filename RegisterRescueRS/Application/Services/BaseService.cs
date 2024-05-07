@@ -1,10 +1,22 @@
-﻿namespace RegisterRescueRS.Domain.Application.Services
+﻿using RegisterRescueRS.Auth;
+
+namespace RegisterRescueRS.Domain.Application.Services
 {
     public class BaseService
     {
         protected readonly IServiceProvider _serviceProvider;
 
-        public BaseService(IServiceProvider serviceProvider) { this._serviceProvider = serviceProvider; }
+        protected readonly UserSession _userSession;
+
+        public BaseService(IServiceProvider serviceProvider, UserSession userSession) =>
+            (this._serviceProvider, _userSession) = (serviceProvider, userSession);
+
+        public string GetExceptionMessage(Exception ex)
+        {
+            if (ex.InnerException == null)
+                return ex.Message;
+
+            return GetExceptionMessage(ex);
+        }
     }
 }
-

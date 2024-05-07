@@ -8,7 +8,7 @@ public class HousedRepository(RegisterRescueRSDbContext dbContext) : IRepository
 {
     private readonly RegisterRescueRSDbContext _db = dbContext;
 
-    internal async Task InsertRange(IEnumerable<HousedEntity> houseds)
+    public async Task InsertRange(IEnumerable<HousedEntity> houseds)
     {
         await _db.Houseds.AddRangeAsync(houseds);
         await _db.SaveChangesAsync();

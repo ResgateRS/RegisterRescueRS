@@ -6,38 +6,25 @@ using RegisterRescueRS.Infrastructure.Repositories;
 using RegisterRescueRS.Presenter.Controllers.App.V1.DTOs;
 using RegisterRescueRS.Tools;
 using System.Transactions;
+using RegisterRescueRS.Auth;
+using RegisterRescueRS.DTOs;
 
 namespace RegisterRescueRS.Domain.Application.Services;
 
-public class FamilyService(IServiceProvider serviceProvider) : BaseService(serviceProvider), IService
+public class FamilyService(IServiceProvider serviceProvider, UserSession userSession) : BaseService(serviceProvider, userSession), IService
 {
-    public async Task<ActionResult<IEnumerable<FamilyCardDTO>>> ListFamilies(int page, int size, string searchTerm, string authToken)
+    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> ListFamilies(int page, int size, string searchTerm, string authToken)
     {
         if (page < 1)
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                DebugMessage = "Page must be greater than 0",
-                Message = "Um erro aconteceu, tente novamente!"
-            });
+            throw new Exception("Um erro aconteceu, tente novamente!");
 
         if (size < 1)
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                Message = "Um erro aconteceu, tente novamente!",
-                DebugMessage = "Size must be greater than 0"
-            });
-
-        if (!Guid.TryParse(JwtManager.ExtractPayload<string>(authToken.Split(" ")[1], LoginClaimsEnum.ShelterId), out Guid shelterId))
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                Message = "Um erro aconteceu, tente novamente!",
-                DebugMessage = "Invalid Token"
-            });
+            throw new Exception("Um erro aconteceu, tente novamente!");
 
         var families = await this._serviceProvider.GetRequiredService<FamilyRepository>()
-            .ListFamilies(page, size, searchTerm, shelterId);
+            .ListFamilies(page, size, searchTerm, _userSession.ShelterId);
 
-        return new OkObjectResult(families.Select(x => new FamilyCardDTO
+        return Response<IEnumerable<FamilyCardDTO>>.Success(families.Select(x => new FamilyCardDTO
         {
             FamilyId = x.FamilyId,
             Responsable = x.Responsable.Name,
@@ -45,43 +32,22 @@ public class FamilyService(IServiceProvider serviceProvider) : BaseService(servi
         }));
     }
 
-    public async Task<ActionResult<ResponseDTO>> PostFamily(FamilyRequestDTO dto, string authToken)
+    public async Task<IResponse<ResponseDTO>> PostFamily(FamilyRequestDTO dto, string authToken)
     {
-        if (!Guid.TryParse(JwtManager.ExtractPayload<string>(authToken.Split(" ")[1], LoginClaimsEnum.ShelterId), out Guid shelterId))
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                Message = "Um erro aconteceu, tente novamente!",
-                DebugMessage = "Invalid Token"
-            });
-
         var shelter = await this._serviceProvider.GetRequiredService<ShelterRepository>()
-            .GetShelterById(shelterId);
+            .GetShelterById(_userSession.ShelterId);
+
         if (shelter == null)
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                Message = "Abrigo não encontrado",
-                DebugMessage = "Shelter not found"
-            });
+            throw new Exception("Abrigo não encontrado");
 
         if (!dto.Houseds.Any())
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                Message = "Nenhum abrigado informado",
-                DebugMessage = "No housed informed"
-            });
+            throw new Exception("Nenhum abrigado informado");
 
         if (!dto.Houseds.Any(x => x.Responsable))
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                Message = "É obrigatório haver um responsável na família",
-                DebugMessage = "No responsable housed informed"
-            });
+            throw new Exception("É obrigatório haver um responsável na família");
 
         if (dto.Houseds.Where(x => x.Responsable).Count() > 1)
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                Message = "Só pode haver um responsável na família"
-            });
+            throw new Exception("Só pode haver um responsável na família");
 
         HousedEntity responsable = dto.Houseds
             .Where(x => x.Responsable)
@@ -98,7 +64,7 @@ public class FamilyService(IServiceProvider serviceProvider) : BaseService(servi
 
         FamilyEntity family = new()
         {
-            ShelterId = shelterId,
+            ShelterId = _userSession.ShelterId,
             ResponsableId = responsable.HousedId,
             RegisteredAt = DateTimeOffset.Now,
             UpdatedAt = DateTimeOffset.Now,
@@ -131,32 +97,20 @@ public class FamilyService(IServiceProvider serviceProvider) : BaseService(servi
             ts.Complete();
         }
 
-        return new OkObjectResult(new ResponseDTO
-        {
-            Message = "Família cadastrada com sucesso",
-            DebugMessage = "Family registered successfully"
-        });
+        return Response<ResponseDTO>.Success(new ResponseDTO { Message = "Família cadastrada com sucesso" });
     }
 
-    internal async Task<ActionResult<FamilyDTO>> FamilyDetails(Guid familyId)
+    public async Task<IResponse<FamilyDTO>> FamilyDetails(Guid familyId)
     {
         if (Guid.Empty == familyId)
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                Message = "Família não encontrada",
-                DebugMessage = "Family not found"
-            });
+            throw new Exception("Família não encontrada");
 
         var family = await this._serviceProvider.GetRequiredService<FamilyRepository>()
             .GetFamilyById(familyId);
 
         if (family == null)
-            return new BadRequestObjectResult(new ResponseDTO
-            {
-                Message = "Família não encontrada",
-                DebugMessage = "Family not found"
-            });
+            throw new Exception("Família não encontrada");
 
-        return new OkObjectResult(FamilyDTO.FromEntity(family));
+        return Response<FamilyDTO>.Success(FamilyDTO.FromEntity(family));
     }
 }

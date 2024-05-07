@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RegisterRescueRS.Domain.Application.Services;
+using RegisterRescueRS.DTOs;
 using RegisterRescueRS.Presenter.Controllers.App.V1.DTOs;
 
 namespace RegisterRescueRS.Presenter.Controllers.App.V1;
@@ -12,13 +13,13 @@ public class LoginController(IServiceProvider serviceProvider) : BaseController(
     [SkipAuthenticationFilter]
     [HttpPost]
     [MapToApiVersion("1.0")]
-    public async Task<ActionResult<LoginResponseDTO>> Login(LoginRequestDTO dto) =>
+    public async Task<IResponse<LoginResponseDTO>> Login(LoginRequestDTO dto) =>
         await this.serviceProvider.GetRequiredService<LoginService>()
             .handle(dto);
 
     [HttpPost("CreateShelter")]
     [MapToApiVersion("1.0")]
-    public async Task<ActionResult<LoginResponseDTO>> CreateShelter(CreateShelterDTO dto) =>
+    public async Task<IResponse<ResponseDTO>> CreateShelter(CreateShelterDTO dto) =>
         await this.serviceProvider.GetRequiredService<LoginService>()
             .CreateShelter(dto);
 }
