@@ -7,6 +7,7 @@ public class ShelterEntity
     public string Password { get; set; } = null!;
     public string ShelterName { get; set; } = null!;
     public string Address { get; set; } = null!;
+    public bool Adm { get; set; }
 
     public ICollection<FamilyEntity> Families { get; set; } = [];
     public ShelterNeedsEntity? ShelterNeeds { get; set; }

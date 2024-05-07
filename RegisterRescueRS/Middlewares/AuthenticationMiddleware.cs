@@ -24,7 +24,6 @@ public class AuthenticationMiddleware(RequestDelegate next)
         if (metadata != null)
         {
             bool skipAuthentication = metadata.GetMetadata<SkipAuthenticationAttribute>() != null;
-            // bool optionalAuthenticationAttribute = metadata.GetMetadata<OptionalAuthenticationAttribute>() != null;
 
             if (!skipAuthentication)
             {
@@ -32,6 +31,7 @@ public class AuthenticationMiddleware(RequestDelegate next)
                     throw new MessageException("Login expirado.", ResultType.Error);
 
                 _userSession.ShelterId = userSession!.ShelterId;
+                _userSession.Adm = userSession!.Adm;
             }
         }
 

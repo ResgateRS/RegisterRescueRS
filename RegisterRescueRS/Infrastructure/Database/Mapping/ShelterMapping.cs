@@ -13,6 +13,9 @@ public class ShelterMapping : IEntityTypeConfiguration<ShelterEntity>
         builder.Property(e => e.Login);
         builder.Property(e => e.Password);
         builder.Property(e => e.ShelterName);
+        builder.Property(e => e.Adm)
+            .HasDefaultValue(false)
+            .HasConversion(v => v ? 1 : 0, v => v == 1);
         builder.HasMany(e => e.Families)
             .WithOne(x => x.Shelter)
             .HasForeignKey(e => e.ShelterId);
