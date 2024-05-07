@@ -23,7 +23,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
-  <!-- <ItemGroup>
+  <ItemGroup>
     <None Include="cwallet.sso" CopyToOutputDirectory="Always" />
     <None Include="ewallet.p12" CopyToOutputDirectory="Always" />
     <None Include="ewallet.pem" CopyToOutputDirectory="Always" />
@@ -32,5 +32,5 @@
     <None Include="sqlnet.ora" CopyToOutputDirectory="Always" />
     <None Include="tnsnames.ora" CopyToOutputDirectory="Always" />
     <None Include="truststore.jks" CopyToOutputDirectory="Always" />
-  </ItemGroup> -->
+  </ItemGroup>
 </Project>

@@ -4,10 +4,10 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./RescueRS/Dockerfile
-    container_name: rescue_rs_api
+      dockerfile: ./RegisterRescueRS/Dockerfile
+    container_name: register_rescue_rs_api
     ports:
-      - 8094:80
+      - 8092:80
     environment:
       - ASPNETCORE_HTTP_PORTS=80
       - TZ=America/Sao_Paulo
