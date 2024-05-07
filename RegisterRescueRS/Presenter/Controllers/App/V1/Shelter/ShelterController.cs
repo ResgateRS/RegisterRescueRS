@@ -11,8 +11,6 @@ namespace RegisterRescueRS.Presenter.Controllers.App.V1;
 [ApiVersion("1.0")]
 public class ShelterController(IServiceProvider serviceProvider) : BaseController(serviceProvider)
 {
-    //TODO: Eliminate bypass
-    [SkipAuthentication]
     [HttpPost]
     [MapToApiVersion("1.0")]
     public async Task<IResponse<ResponseDTO>> CreateShelter(CreateShelterDTO dto) =>
@@ -25,11 +23,18 @@ public class ShelterController(IServiceProvider serviceProvider) : BaseControlle
         await this.serviceProvider.GetRequiredService<ShelterService>()
             .UpsertNeeds(dto);
 
-    [PaginatedRequest("Id da ultima Necessidade", PaginationType.Cursor, typeof(Guid))]
-    [HttpGet("List")]
+    [PaginatedRequest("Id da ultima Doação", PaginationType.Cursor, typeof(Guid))]
+    [HttpGet("ListDonations")]
     [MapToApiVersion("1.0")]
-    public async Task<IResponse<IEnumerable<ShelterNeedsDTO>>> ListNeeds(bool? acceptingVolunteers = null) =>
+    public async Task<IResponse<IEnumerable<DonationDTO>>> ListDonations() =>
         await this.serviceProvider.GetRequiredService<ShelterService>()
-            .ListNeeds(acceptingVolunteers);
+            .ListDonations();
+
+    [PaginatedRequest("Id do ultimo Voluntário", PaginationType.Cursor, typeof(Guid))]
+    [HttpGet("ListVolunteers")]
+    [MapToApiVersion("1.0")]
+    public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers(bool? acceptingVolunteers = null) =>
+        await this.serviceProvider.GetRequiredService<ShelterService>()
+            .ListVolunteers();
 }
 

@@ -10,5 +10,5 @@ public class ShelterEntity
     public bool Adm { get; set; }
 
     public ICollection<FamilyEntity> Families { get; set; } = [];
-    public ShelterNeedsEntity? ShelterNeeds { get; set; }
+    public ICollection<ShelterNeedsEntity>? ShelterNeeds { get; set; }
 }

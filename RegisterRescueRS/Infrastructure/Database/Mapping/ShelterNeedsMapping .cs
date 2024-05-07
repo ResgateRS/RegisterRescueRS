@@ -19,8 +19,14 @@ public class ShelterNeedsMapping : IEntityTypeConfiguration<ShelterNeedsEntity>
             .HasConversion(v => v ? 1 : 0, v => v == 1);
         builder.Property(e => e.AcceptingDonations)
             .HasConversion(v => v ? 1 : 0, v => v == 1);
+        builder.Property(e => e.Avaliable)
+            .HasConversion(v => v ? 1 : 0, v => v == 1);
         builder.Property(e => e.DonationDescription);
         builder.Property(e => e.VolunteersSubscriptionLink);
         builder.Property(e => e.UpdatedAt);
+
+        builder.HasOne(e => e.Shelter)
+            .WithMany(e => e.ShelterNeeds)
+            .HasForeignKey(e => e.ShelterId);
     }
 }
