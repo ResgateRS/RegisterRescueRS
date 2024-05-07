@@ -28,4 +28,8 @@ public class ShelterRepository(RegisterRescueRSDbContext dbContext) : IRepositor
     public async Task<ShelterEntity?> GetShelterById(Guid shelterId) =>
         await this._db.Shelters
             .FirstOrDefaultAsync(e => e.ShelterId == shelterId);
+
+    public async Task<bool> ShelterExistsById(Guid shelterId) =>
+        await this._db.Shelters
+            .AnyAsync(e => e.ShelterId == shelterId);
 }

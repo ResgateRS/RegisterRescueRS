@@ -66,7 +66,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen(c =>
     {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "ResgateRS", Version = "v1" });
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "RegisterRescueRS", Version = "v1" });
 
         c.AddSecurityDefinition("Bearer", SwaggerSecurity.SecurityScheme);
         c.AddSecurityRequirement(SwaggerSecurity.SecurityRequirement);

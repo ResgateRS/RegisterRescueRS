@@ -8,6 +8,7 @@ namespace RegisterRescueRS.Infrastructure.Database
     {
         public DbSet<FamilyEntity> Families => Set<FamilyEntity>();
         public DbSet<ShelterEntity> Shelters => Set<ShelterEntity>();
+        public DbSet<ShelterNeedEntity> ShelterNeeds => Set<ShelterNeedEntity>();
         public DbSet<HousedEntity> Houseds => Set<HousedEntity>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

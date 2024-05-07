@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RegisterRescueRS.Attributes;
 using RegisterRescueRS.Domain.Application.Services;
 using RegisterRescueRS.DTOs;
 using RegisterRescueRS.Presenter.Controllers.App.V1.DTOs;
@@ -14,13 +15,14 @@ public class FamilyController(IServiceProvider serviceProvider) : BaseController
     [MapToApiVersion("1.0")]
     public async Task<IResponse<ResponseDTO>> PostFamily(FamilyRequestDTO dto) =>
         await this.serviceProvider.GetRequiredService<FamilyService>()
-            .PostFamily(dto, Request.Headers.Authorization.ToString());
+            .PostFamily(dto);
 
+    [PaginatedRequest("Id da ultima família", PaginationType.Cursor, typeof(Guid))]
     [HttpGet("List")]
     [MapToApiVersion("1.0")]
-    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> ListFamilies(int page, int size, string searchTerm) =>
+    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> ListFamilies(int page, int size, string? searchTerm = null) =>
         await this.serviceProvider.GetRequiredService<FamilyService>()
-            .ListFamilies(page, size, searchTerm, Request.Headers.Authorization.ToString());
+                .ListFamilies(searchTerm);
 
     [HttpGet("Details")]
     [MapToApiVersion("1.0")]

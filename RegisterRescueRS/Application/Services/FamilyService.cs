@@ -13,16 +13,10 @@ namespace RegisterRescueRS.Domain.Application.Services;
 
 public class FamilyService(IServiceProvider serviceProvider, UserSession userSession) : BaseService(serviceProvider, userSession), IService
 {
-    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> ListFamilies(int page, int size, string searchTerm, string authToken)
+    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> ListFamilies(string? searchTerm)
     {
-        if (page < 1)
-            throw new Exception("Um erro aconteceu, tente novamente!");
-
-        if (size < 1)
-            throw new Exception("Um erro aconteceu, tente novamente!");
-
         var families = await this._serviceProvider.GetRequiredService<FamilyRepository>()
-            .ListFamilies(page, size, searchTerm, _userSession.ShelterId);
+            .ListFamilies(searchTerm, _userSession.ShelterId);
 
         return Response<IEnumerable<FamilyCardDTO>>.Success(families.Select(x => new FamilyCardDTO
         {
@@ -32,7 +26,7 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
         }));
     }
 
-    public async Task<IResponse<ResponseDTO>> PostFamily(FamilyRequestDTO dto, string authToken)
+    public async Task<IResponse<ResponseDTO>> PostFamily(FamilyRequestDTO dto)
     {
         var shelter = await this._serviceProvider.GetRequiredService<ShelterRepository>()
             .GetShelterById(_userSession.ShelterId);

@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RegisterRescueRS.Domain.Application.Entities;
 using RegisterRescueRS.Infrastructure.Database;
+using RegisterRescueRS.Pagination;
 
 namespace RegisterRescueRS.Infrastructure.Repositories;
 
-public class FamilyRepository(RegisterRescueRSDbContext dbContext) : IRepository
+public class FamilyRepository(RegisterRescueRSDbContext dbContext, PaginationDTO pagination) : BaseRepository(dbContext, pagination)
 {
-    private readonly RegisterRescueRSDbContext _db = dbContext;
-
     public async Task<FamilyEntity> InsertOrUpdate(FamilyEntity entity)
     {
         if (entity.FamilyId == Guid.Empty)
@@ -20,15 +19,21 @@ public class FamilyRepository(RegisterRescueRSDbContext dbContext) : IRepository
         return entity;
     }
 
-    public async Task<IEnumerable<FamilyEntity>> ListFamilies(int page, int size, string searchTerm, Guid shelterId) =>
-        await _db.Houseds
+    public async Task<IEnumerable<FamilyEntity>> ListFamilies(string? searchTerm, Guid shelterId)
+    {
+        DateTimeOffset? lastDate = await this._db.Families
+                        .Where(x => x.FamilyId == (Guid?)this._pagination.cursor)
+                        .Select(x => (DateTimeOffset?)x.RegisteredAt)
+                        .FirstOrDefaultAsync();
+
+        return await _db.Houseds
             .Include(x => x.Family)
             .Where(x => x.Family.ShelterId == shelterId)
-            .Where(x => x.Name.Contains(searchTerm) || x.Cellphone.Contains(searchTerm))
+            .Where(x => searchTerm == null || x.Name.Contains(searchTerm) || x.Cellphone.Contains(searchTerm))
             .Select(x => x.Family)
-            .Skip((page - 1) * size)
-            .Take(size)
+            .ApplyPagination(this._pagination, x => lastDate == null || x.RegisteredAt < lastDate)
             .ToListAsync();
+    }
 
     public async Task<FamilyEntity?> GetFamilyById(Guid familyId) =>
         await this._db.Families

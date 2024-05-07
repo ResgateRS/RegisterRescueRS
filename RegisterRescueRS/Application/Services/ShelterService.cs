@@ -4,7 +4,6 @@ using RegisterRescueRS.Domain.Application.Services.Interfaces;
 using RegisterRescueRS.DTOs;
 using RegisterRescueRS.Infrastructure.Repositories;
 using RegisterRescueRS.Presenter.Controllers.App.V1.DTOs;
-using RegisterRescueRS.Tools;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -55,5 +54,40 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
         {
             Message = "Shelter created successfully!"
         });
+    }
+
+    public async Task<IResponse<ResponseDTO>> UpsertNeeds(ShelterNeedsDTO dto)
+    {
+        if (dto.ShelterId == Guid.Empty)
+            throw new Exception("ShelterId é necessário");
+
+        _ = await this._serviceProvider.GetRequiredService<ShelterRepository>()
+            .GetShelterById(dto.ShelterId) ??
+            throw new Exception("Abrigo não encontrado");
+
+        await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
+            .InsertOrUpdate(new ShelterNeedEntity
+            {
+                ShelterId = dto.ShelterId,
+                AcceptingVolunteers = dto.AcceptingVolunteers,
+                AcceptingDoctors = dto.AcceptingDoctors,
+                AcceptingVeterinarians = dto.AcceptingVeterinarians,
+                AcceptingDonations = dto.AcceptingDonations,
+                DonationDescription = dto.DonationDescription,
+                UpdatedAt = DateTimeOffset.Now
+            });
+
+        return Response<ResponseDTO>.Success(new ResponseDTO
+        {
+            Message = "Needs updated successfully!"
+        });
+    }
+
+    public async Task<IResponse<IEnumerable<ShelterNeedsDTO>>> ListNeeds(bool? acceptingVolunteers)
+    {
+        var entities = await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
+            .ListNeeds(acceptingVolunteers);
+
+        return Response<IEnumerable<ShelterNeedsDTO>>.Success(entities.Select(ShelterNeedsDTO.FromEntity));
     }
 }
