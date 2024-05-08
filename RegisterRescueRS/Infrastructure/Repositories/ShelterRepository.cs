@@ -11,7 +11,7 @@ public class ShelterRepository(RegisterRescueRSDbContext dbContext) : IRepositor
 
     public async Task<ShelterEntity?> GetShelter(string login, string password) =>
         await this._db.Shelters
-            .FirstOrDefaultAsync(e => e.Login == login && e.Password == password);
+            .FirstOrDefaultAsync(e => e.Login.ToUpper() == login.ToUpper() && e.Password == password);
 
     public async Task<ShelterEntity> InsertOrUpdate(ShelterEntity user)
     {

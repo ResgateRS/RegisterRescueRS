@@ -5,7 +5,7 @@ namespace RegisterRescueRS.Infrastructure.Repositories;
 
 public interface IRepository { }
 
-public abstract class BaseRepository
+public abstract class BaseRepository : IRepository
 {
 
     protected readonly RegisterRescueRSDbContext _db;

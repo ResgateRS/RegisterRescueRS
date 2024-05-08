@@ -22,7 +22,7 @@ public class LoginService(IServiceProvider serviceProvider, UserSession userSess
 
         var shelter = await this._serviceProvider.GetRequiredService<ShelterRepository>()
             .GetShelter(dto.Login, GetMd5Hash(dto.Password)) ??
-            throw new Exception("Usuário ou senha inválidos");
+                throw new Exception("Usuário ou senha inválidos");
 
         _userSession.ShelterId = shelter.ShelterId;
         _userSession.Adm = shelter.Adm;

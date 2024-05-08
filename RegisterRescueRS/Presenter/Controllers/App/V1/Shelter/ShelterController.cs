@@ -35,7 +35,7 @@ public class ShelterController(IServiceProvider serviceProvider) : BaseControlle
     [PaginatedRequest("Id do ultimo Voluntário", PaginationType.Cursor, typeof(Guid))]
     [HttpGet("ListVolunteers")]
     [MapToApiVersion("1.0")]
-    public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers(bool? acceptingVolunteers = null) =>
+    public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers() =>
         await this.serviceProvider.GetRequiredService<ShelterService>()
             .ListVolunteers();
 }
