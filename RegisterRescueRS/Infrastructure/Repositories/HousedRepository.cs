@@ -15,8 +15,6 @@ public class HousedRepository(RegisterRescueRSDbContext dbContext) : IRepository
 
         this._db.Houseds.RemoveRange(query);
 
-        houseds.ToList().ForEach(x => x.HousedId = Guid.NewGuid());
-
         await _db.Houseds.AddRangeAsync(houseds);
         await _db.SaveChangesAsync();
     }

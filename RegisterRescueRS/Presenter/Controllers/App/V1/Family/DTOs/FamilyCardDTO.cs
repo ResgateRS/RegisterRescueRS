@@ -6,12 +6,14 @@ public class FamilyCardDTO
     public Guid FamilyId { get; set; }
     public int TotalPeopleNumber { get; set; }
     public string Responsable { get; set; } = null!;
+    public string? Cellphone { get; set; }
 
-    public static FamilyCardDTO FromEntity(FamilyEntity entity) =>
+    internal static FamilyCardDTO FromEntity(FamilyEntity entity) =>
         new()
         {
             FamilyId = entity.FamilyId,
-            TotalPeopleNumber = entity.Houseds.Count(),
-            Responsable = entity.Responsable.Name
+            Responsable = entity.Houseds.First(x => x.IsFamilyResponsable).Name,
+            Cellphone = entity.Houseds.First(x => x.IsFamilyResponsable).Cellphone,
+            TotalPeopleNumber = entity.Houseds.Count()
         };
 }

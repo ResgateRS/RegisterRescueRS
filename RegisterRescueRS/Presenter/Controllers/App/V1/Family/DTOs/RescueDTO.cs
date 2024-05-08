@@ -17,7 +17,7 @@ public class FamilyDTO
         {
             FamilyId = entity.FamilyId,
             ShelterId = entity.ShelterId,
-            Responsable = entity.Responsable.Name,
+            Responsable = entity.Houseds.First(x => x.IsFamilyResponsable).Name,
             RegisteredAt = entity.RegisteredAt,
             UpdatedAt = entity.UpdatedAt,
             Houseds = entity.Houseds.Select(HousedDTO.FromEntity),

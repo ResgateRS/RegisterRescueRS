@@ -8,7 +8,7 @@ using RegisterRescueRS.Infrastructure.Database;
 
 #nullable disable
 
-namespace RegisterRescueRS.Migrations
+namespace RegisterRescueRS.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(RegisterRescueRSDbContext))]
     partial class RegisterRescueRSDbContextModelSnapshot : ModelSnapshot
@@ -31,9 +31,6 @@ namespace RegisterRescueRS.Migrations
                     b.Property<DateTimeOffset>("RegisteredAt")
                         .HasColumnType("TIMESTAMP(7) WITH TIME ZONE");
 
-                    b.Property<Guid>("ResponsableId")
-                        .HasColumnType("RAW(16)");
-
                     b.Property<Guid>("ShelterId")
                         .HasColumnType("RAW(16)");
 
@@ -41,9 +38,6 @@ namespace RegisterRescueRS.Migrations
                         .HasColumnType("TIMESTAMP(7) WITH TIME ZONE");
 
                     b.HasKey("FamilyId");
-
-                    b.HasIndex("ResponsableId")
-                        .IsUnique();
 
                     b.HasIndex("ShelterId");
 
@@ -63,9 +57,6 @@ namespace RegisterRescueRS.Migrations
                         .HasColumnType("NVARCHAR2(2000)");
 
                     b.Property<Guid>("FamilyId")
-                        .HasColumnType("RAW(16)");
-
-                    b.Property<Guid>("FamilyResponsableId")
                         .HasColumnType("RAW(16)");
 
                     b.Property<int>("IsFamilyResponsable")
@@ -162,19 +153,11 @@ namespace RegisterRescueRS.Migrations
 
             modelBuilder.Entity("RegisterRescueRS.Domain.Application.Entities.FamilyEntity", b =>
                 {
-                    b.HasOne("RegisterRescueRS.Domain.Application.Entities.HousedEntity", "Responsable")
-                        .WithOne("FamilyResponsable")
-                        .HasForeignKey("RegisterRescueRS.Domain.Application.Entities.FamilyEntity", "ResponsableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RegisterRescueRS.Domain.Application.Entities.ShelterEntity", "Shelter")
                         .WithMany("Families")
                         .HasForeignKey("ShelterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Responsable");
 
                     b.Navigation("Shelter");
                 });
@@ -204,11 +187,6 @@ namespace RegisterRescueRS.Migrations
             modelBuilder.Entity("RegisterRescueRS.Domain.Application.Entities.FamilyEntity", b =>
                 {
                     b.Navigation("Houseds");
-                });
-
-            modelBuilder.Entity("RegisterRescueRS.Domain.Application.Entities.HousedEntity", b =>
-                {
-                    b.Navigation("FamilyResponsable");
                 });
 
             modelBuilder.Entity("RegisterRescueRS.Domain.Application.Entities.ShelterEntity", b =>

@@ -22,18 +22,17 @@ public class FamilyRepository(RegisterRescueRSDbContext dbContext, PaginationDTO
         return entity;
     }
 
-    public async Task<IEnumerable<FamilyEntity>> ListFamilies(string? searchTerm, Guid shelterId)
+    public async Task<IEnumerable<FamilyEntity>> ListFamilies(string? searchTerm, Guid? shelterId = null)
     {
         DateTimeOffset? lastDate = await this._db.Families
                         .Where(x => x.FamilyId == (Guid?)this._pagination.cursor)
                         .Select(x => (DateTimeOffset?)x.RegisteredAt)
                         .FirstOrDefaultAsync();
 
-        return await _db.Houseds
-            .Include(x => x.Family)
-            .Where(x => x.Family.ShelterId == shelterId)
-            .Where(x => searchTerm == null || x.Name.Contains(searchTerm) || (!string.IsNullOrEmpty(x.Cellphone) && x.Cellphone.Contains(searchTerm)))
-            .Select(x => x.Family)
+        return await _db.Families
+            .Include(x => x.Houseds)
+            .Where(x => shelterId == null || x.ShelterId == shelterId)
+            .Where(x => searchTerm == null || x.Houseds.Any(p => p.Name.Contains(searchTerm)) || x.Houseds.Any(p => !string.IsNullOrEmpty(p.Cellphone) && p.Cellphone.Contains(searchTerm)))
             .OrderByDescending(x => x.RegisteredAt)
             .ApplyPagination(this._pagination, x => lastDate == null || x.RegisteredAt < lastDate)
             .ToListAsync();
@@ -44,20 +43,4 @@ public class FamilyRepository(RegisterRescueRSDbContext dbContext, PaginationDTO
             .Include(x => x.Houseds)
             .Include(x => x.Shelter)
             .FirstOrDefaultAsync(x => x.FamilyId == familyId);
-
-    public async Task<IEnumerable<FamilyEntity>> GlobalListFamilies(string searchTerm)
-    {
-        DateTimeOffset? lastDate = await this._db.Families
-                        .Where(x => x.FamilyId == (Guid?)this._pagination.cursor)
-                        .Select(x => (DateTimeOffset?)x.RegisteredAt)
-                        .FirstOrDefaultAsync();
-
-        return await _db.Houseds
-            .Include(x => x.Family)
-            .Where(x => searchTerm == null || x.Name.Contains(searchTerm) || (!string.IsNullOrEmpty(x.Cellphone) && x.Cellphone.Contains(searchTerm)))
-            .Select(x => x.Family)
-            .OrderByDescending(x => x.RegisteredAt)
-            .ApplyPagination(this._pagination, x => lastDate == null || x.RegisteredAt < lastDate)
-            .ToListAsync();
-    }
 }

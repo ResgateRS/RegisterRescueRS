@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using RegisterRescueRS.Domain.Application.Entities;
-using RegisterRescueRS.Infrastructure.Database.Mapping;
 
 namespace RegisterRescueRS.Infrastructure.Database
 {
@@ -13,12 +12,43 @@ namespace RegisterRescueRS.Infrastructure.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<FamilyEntity>()
+                .HasKey(f => f.FamilyId);
 
-            modelBuilder.ApplyConfiguration(new FamilyMapping());
-            modelBuilder.ApplyConfiguration(new ShelterMapping());
-            modelBuilder.ApplyConfiguration(new ShelterNeedsMapping());
-            modelBuilder.ApplyConfiguration(new HousedMapping());
+            modelBuilder.Entity<ShelterEntity>()
+                .HasKey(f => f.ShelterId);
+
+            modelBuilder.Entity<HousedEntity>()
+                .HasKey(f => f.HousedId);
+
+            modelBuilder.Entity<ShelterNeedsEntity>()
+                .HasKey(f => f.ShelterNeedsId);
+
+            modelBuilder.Entity<ShelterNeedsEntity>()
+                .Property(e => e.AcceptingVolunteers)
+                .HasConversion(v => v ? 1 : 0, v => v == 1);
+            modelBuilder.Entity<ShelterNeedsEntity>()
+                .Property(e => e.AcceptingDoctors)
+                .HasConversion(v => v ? 1 : 0, v => v == 1);
+            modelBuilder.Entity<ShelterNeedsEntity>()
+                .Property(e => e.AcceptingVeterinarians)
+                .HasConversion(v => v ? 1 : 0, v => v == 1);
+            modelBuilder.Entity<ShelterNeedsEntity>()
+                .Property(e => e.AcceptingDonations)
+                .HasConversion(v => v ? 1 : 0, v => v == 1);
+            modelBuilder.Entity<ShelterNeedsEntity>()
+                .Property(e => e.Avaliable)
+                .HasConversion(v => v ? 1 : 0, v => v == 1);
+
+            modelBuilder.Entity<HousedEntity>()
+                .Property(e => e.IsFamilyResponsable)
+                .HasConversion(v => v ? 1 : 0, v => v == 1);
+
+            modelBuilder.Entity<ShelterEntity>()
+                .Property(e => e.Adm)
+                .HasDefaultValue(false)
+                .HasConversion(v => v ? 1 : 0, v => v == 1);
         }
+
     }
 }
