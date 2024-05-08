@@ -39,8 +39,8 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
         if (string.IsNullOrEmpty(dto.Address))
             throw new Exception("Endereço é necessário");
 
-        // if (!_userSession.Adm)
-        //     throw new Exception("Acesso negado");
+        if (!_userSession.Adm)
+            throw new Exception("Acesso negado");
 
         ShelterEntity entity = new()
         {
