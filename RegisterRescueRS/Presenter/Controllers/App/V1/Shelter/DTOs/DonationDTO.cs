@@ -7,6 +7,8 @@ public class DonationDTO
     public bool AcceptingDonations { get; set; }
     public string? Address { get; set; }
     public string? DonationDescription { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 
     internal static DonationDTO FromEntity(ShelterNeedsEntity entity) =>
         new()
@@ -14,6 +16,7 @@ public class DonationDTO
             ShelterId = entity.ShelterId,
             AcceptingDonations = entity.AcceptingDonations,
             Address = entity.Shelter.Address,
-            DonationDescription = entity.DonationDescription
+            DonationDescription = entity.DonationDescription,
+            Latitude = entity.Shelter.Latitude
         };
 }

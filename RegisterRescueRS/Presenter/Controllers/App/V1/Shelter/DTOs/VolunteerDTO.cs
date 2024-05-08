@@ -11,6 +11,8 @@ public class VolunteerDTO
     public bool Avaliable { get; set; }
     public string? Address { get; set; }
     public string? VolunteersSubscriptionLink { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 
     public static VolunteerDTO FromEntity(ShelterNeedsEntity entity) =>
         new()
@@ -22,6 +24,8 @@ public class VolunteerDTO
             AcceptingDonations = entity.AcceptingDonations,
             Address = entity.Shelter.Address,
             VolunteersSubscriptionLink = entity.VolunteersSubscriptionLink,
-            Avaliable = entity.Avaliable
+            Avaliable = entity.Avaliable,
+            Latitude = entity.Shelter.Latitude,
+            Longitude = entity.Shelter.Longitude
         };
 }

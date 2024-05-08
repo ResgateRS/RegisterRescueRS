@@ -6,6 +6,8 @@ public class FamilyDTO
     public Guid FamilyId { get; set; }
     public Guid ShelterId { get; set; }
     public string Responsable { get; set; } = null!;
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 
     public DateTimeOffset RegisteredAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
@@ -21,5 +23,7 @@ public class FamilyDTO
             RegisteredAt = entity.RegisteredAt,
             UpdatedAt = entity.UpdatedAt,
             Houseds = entity.Houseds.Select(HousedDTO.FromEntity),
+            Latitude = entity.Shelter.Latitude,
+            Longitude = entity.Shelter.Longitude
         };
 }

@@ -48,7 +48,9 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
             Password = GetMd5Hash(dto.Password),
             ShelterName = dto.Name,
             Address = dto.Address,
-            Adm = false
+            Adm = false,
+            Latitude = dto.Latitude,
+            Longitude = dto.Longitude
         };
 
         await this._serviceProvider.GetRequiredService<ShelterRepository>()

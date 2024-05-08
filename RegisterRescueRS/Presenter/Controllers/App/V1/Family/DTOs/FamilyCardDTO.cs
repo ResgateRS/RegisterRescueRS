@@ -7,6 +7,8 @@ public class FamilyCardDTO
     public int TotalPeopleNumber { get; set; }
     public string Responsable { get; set; } = null!;
     public string? Cellphone { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 
     internal static FamilyCardDTO FromEntity(FamilyEntity entity) =>
         new()
@@ -14,6 +16,8 @@ public class FamilyCardDTO
             FamilyId = entity.FamilyId,
             Responsable = entity.Houseds.First(x => x.IsFamilyResponsable).Name,
             Cellphone = entity.Houseds.First(x => x.IsFamilyResponsable).Cellphone,
-            TotalPeopleNumber = entity.Houseds.Count()
+            TotalPeopleNumber = entity.Houseds.Count(),
+            Latitude = entity.Shelter.Latitude,
+            Longitude = entity.Shelter.Longitude
         };
 }

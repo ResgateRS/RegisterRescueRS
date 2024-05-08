@@ -31,6 +31,7 @@ public class FamilyRepository(RegisterRescueRSDbContext dbContext, PaginationDTO
 
         return await _db.Families
             .Include(x => x.Houseds)
+            .Include(x => x.Shelter)
             .Where(x => shelterId == null || x.ShelterId == shelterId)
             .Where(x => searchTerm == null || x.Houseds.Any(p => p.Name.Contains(searchTerm)) || x.Houseds.Any(p => !string.IsNullOrEmpty(p.Cellphone) && p.Cellphone.Contains(searchTerm)))
             .OrderByDescending(x => x.RegisteredAt)
