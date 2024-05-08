@@ -17,6 +17,7 @@ public class DonationDTO
             AcceptingDonations = entity.AcceptingDonations,
             Address = entity.Shelter.Address,
             DonationDescription = entity.DonationDescription,
-            Latitude = entity.Shelter.Latitude
+            Latitude = entity.Shelter.Latitude,
+            Longitude = entity.Shelter.Longitude
         };
 }
