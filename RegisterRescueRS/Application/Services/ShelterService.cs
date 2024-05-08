@@ -39,8 +39,8 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
         if (string.IsNullOrEmpty(dto.Address))
             throw new Exception("Endereço é necessário");
 
-        if (!_userSession.Adm)
-            throw new Exception("Acesso negado");
+        // if (!_userSession.Adm)
+        //     throw new Exception("Acesso negado");
 
         ShelterEntity entity = new()
         {
@@ -62,17 +62,14 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
 
     public async Task<IResponse<ResponseDTO>> UpsertNeeds(ShelterNeedsDTO dto)
     {
-        if (dto.ShelterId == Guid.Empty)
-            throw new Exception("ShelterId é necessário");
-
         _ = await this._serviceProvider.GetRequiredService<ShelterRepository>()
-            .GetShelterById(dto.ShelterId) ??
+            .GetShelterById(_userSession.ShelterId) ??
             throw new Exception("Abrigo não encontrado");
 
         await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
             .InsertOrUpdate(new ShelterNeedsEntity
             {
-                ShelterId = dto.ShelterId,
+                ShelterId = _userSession.ShelterId,
                 AcceptingVolunteers = dto.AcceptingVolunteers,
                 AcceptingDoctors = dto.AcceptingDoctors,
                 AcceptingVeterinarians = dto.AcceptingVeterinarians,

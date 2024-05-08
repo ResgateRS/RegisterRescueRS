@@ -11,6 +11,7 @@ namespace RegisterRescueRS.Presenter.Controllers.App.V1;
 [ApiVersion("1.0")]
 public class ShelterController(IServiceProvider serviceProvider) : BaseController(serviceProvider)
 {
+    [SkipAuthentication]
     [HttpPost]
     [MapToApiVersion("1.0")]
     public async Task<IResponse<ResponseDTO>> CreateShelter(CreateShelterDTO dto) =>

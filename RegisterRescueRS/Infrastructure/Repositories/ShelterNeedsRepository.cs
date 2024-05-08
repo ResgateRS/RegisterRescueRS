@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using RegisterRescueRS.Domain.Application.Entities;
 using RegisterRescueRS.Infrastructure.Database;
 using RegisterRescueRS.Pagination;
@@ -9,13 +10,10 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
 {
     public async Task<ShelterNeedsEntity> InsertOrUpdate(ShelterNeedsEntity entity)
     {
-        if (entity.ShelterId == Guid.Empty)
-        {
-            entity.ShelterNeedsId = Guid.NewGuid();
-            await this._db.ShelterNeeds.AddAsync(entity);
-        }
-        else
-            this._db.ShelterNeeds.Update(entity);
+        entity.ShelterNeedsId = Guid.NewGuid();
+        await this._db.ShelterNeeds.AddAsync(entity);
+
+        this._db.RemoveRange(this._db.ShelterNeeds.Where(x => x.ShelterNeedsId != entity.ShelterId && x.ShelterId == entity.ShelterId));
 
         await this._db.SaveChangesAsync();
 

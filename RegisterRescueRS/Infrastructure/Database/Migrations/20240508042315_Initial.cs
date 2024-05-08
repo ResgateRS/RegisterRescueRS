@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RegisterRescueRS.Migrations
+namespace RegisterRescueRS.Infrastructure.Database.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -19,11 +19,32 @@ namespace RegisterRescueRS.Migrations
                     Login = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
                     Password = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
                     ShelterName = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
-                    Address = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false)
+                    Address = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
+                    Adm = table.Column<int>(type: "NUMBER(10)", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Shelters", x => x.ShelterId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Families",
+                columns: table => new
+                {
+                    FamilyId = table.Column<Guid>(type: "RAW(16)", nullable: false),
+                    ShelterId = table.Column<Guid>(type: "RAW(16)", nullable: false),
+                    RegisteredAt = table.Column<DateTimeOffset>(type: "TIMESTAMP(7) WITH TIME ZONE", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "TIMESTAMP(7) WITH TIME ZONE", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Families", x => x.FamilyId);
+                    table.ForeignKey(
+                        name: "FK_Families_Shelters_ShelterId",
+                        column: x => x.ShelterId,
+                        principalTable: "Shelters",
+                        principalColumn: "ShelterId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -36,6 +57,7 @@ namespace RegisterRescueRS.Migrations
                     AcceptingDoctors = table.Column<int>(type: "NUMBER(10)", nullable: false),
                     AcceptingVeterinarians = table.Column<int>(type: "NUMBER(10)", nullable: false),
                     AcceptingDonations = table.Column<int>(type: "NUMBER(10)", nullable: false),
+                    Avaliable = table.Column<int>(type: "NUMBER(10)", nullable: false),
                     DonationDescription = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
                     VolunteersSubscriptionLink = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "TIMESTAMP(7) WITH TIME ZONE", nullable: false)
@@ -52,27 +74,6 @@ namespace RegisterRescueRS.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Families",
-                columns: table => new
-                {
-                    FamilyId = table.Column<Guid>(type: "RAW(16)", nullable: false),
-                    ShelterId = table.Column<Guid>(type: "RAW(16)", nullable: false),
-                    ResponsableId = table.Column<Guid>(type: "RAW(16)", nullable: false),
-                    RegisteredAt = table.Column<DateTimeOffset>(type: "TIMESTAMP(7) WITH TIME ZONE", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "TIMESTAMP(7) WITH TIME ZONE", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Families", x => x.FamilyId);
-                    table.ForeignKey(
-                        name: "FK_Families_Shelters_ShelterId",
-                        column: x => x.ShelterId,
-                        principalTable: "Shelters",
-                        principalColumn: "ShelterId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Houseds",
                 columns: table => new
                 {
@@ -82,7 +83,6 @@ namespace RegisterRescueRS.Migrations
                     Age = table.Column<int>(type: "NUMBER(10)", nullable: false),
                     Cellphone = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
                     IsFamilyResponsable = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    FamilyResponsableId = table.Column<Guid>(type: "RAW(16)", nullable: false),
                     RegisteredAt = table.Column<DateTimeOffset>(type: "TIMESTAMP(7) WITH TIME ZONE", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "TIMESTAMP(7) WITH TIME ZONE", nullable: false)
                 },
@@ -98,12 +98,6 @@ namespace RegisterRescueRS.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Families_ResponsableId",
-                table: "Families",
-                column: "ResponsableId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Families_ShelterId",
                 table: "Families",
                 column: "ShelterId");
@@ -116,30 +110,17 @@ namespace RegisterRescueRS.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ShelterNeeds_ShelterId",
                 table: "ShelterNeeds",
-                column: "ShelterId",
-                unique: true);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Families_Houseds_ResponsableId",
-                table: "Families",
-                column: "ResponsableId",
-                principalTable: "Houseds",
-                principalColumn: "HousedId",
-                onDelete: ReferentialAction.Cascade);
+                column: "ShelterId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Families_Houseds_ResponsableId",
-                table: "Families");
+            migrationBuilder.DropTable(
+                name: "Houseds");
 
             migrationBuilder.DropTable(
                 name: "ShelterNeeds");
-
-            migrationBuilder.DropTable(
-                name: "Houseds");
 
             migrationBuilder.DropTable(
                 name: "Families");

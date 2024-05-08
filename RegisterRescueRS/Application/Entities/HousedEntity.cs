@@ -8,13 +8,8 @@ public class HousedEntity
     public int Age { get; set; }
     public string? Cellphone { get; set; }
     public bool IsFamilyResponsable { get; set; }
-    public Guid FamilyResponsableId { get; set; }
     public DateTimeOffset RegisteredAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
 
-    public FamilyEntity Family { get; set; } = new();
-    public FamilyEntity? FamilyResponsable { get; set; }
-
-    public bool IsMinor() =>
-        this.Age < 18;
+    public FamilyEntity Family { get; set; } = null!;
 }

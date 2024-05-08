@@ -15,6 +15,7 @@ public class HousedDTO
             Id = entity.HousedId,
             Name = entity.Name,
             Age = entity.Age,
-            Responsable = entity.IsFamilyResponsable
+            Responsable = entity.IsFamilyResponsable,
+            Cellphone = entity.Cellphone
         };
 }
