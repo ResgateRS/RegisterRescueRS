@@ -33,7 +33,7 @@ public class FamilyRepository(RegisterRescueRSDbContext dbContext, PaginationDTO
             .Include(x => x.Houseds)
             .Include(x => x.Shelter)
             .Where(x => shelterId == null || x.ShelterId == shelterId)
-            .Where(x => searchTerm == null || x.Houseds.Any(p => p.Name.Contains(searchTerm)) || x.Houseds.Any(p => !string.IsNullOrEmpty(p.Cellphone) && p.Cellphone.Contains(searchTerm)))
+            .Where(x => searchTerm == null || x.Houseds.Any(p => p.Name.ToUpper().Contains(searchTerm.ToUpper())) || x.Houseds.Any(p => !string.IsNullOrEmpty(p.Cellphone) && p.Cellphone.ToUpper().Contains(searchTerm.ToUpper())))
             .OrderByDescending(x => x.RegisteredAt)
             .ApplyPagination(this._pagination, x => lastDate == null || x.RegisteredAt < lastDate)
             .ToListAsync();
