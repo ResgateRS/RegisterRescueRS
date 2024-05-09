@@ -88,18 +88,18 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
         });
     }
 
-    public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers()
+    public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers(double? latitude, double? longitude)
     {
         var entities = await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
-            .ListVolunteers();
+            .ListVolunteers(latitude, longitude);
 
         return Response<IEnumerable<VolunteerDTO>>.Success(entities.Select(VolunteerDTO.FromEntity));
     }
 
-    public async Task<IResponse<IEnumerable<DonationDTO>>> ListDonations()
+    public async Task<IResponse<IEnumerable<DonationDTO>>> ListDonations(double? latitude, double? longitude)
     {
         var entities = await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
-            .ListDonations();
+            .ListDonations(latitude, longitude);
 
         return Response<IEnumerable<DonationDTO>>.Success(entities.Select(DonationDTO.FromEntity));
     }

@@ -13,4 +13,7 @@ public class ShelterEntity
 
     public ICollection<FamilyEntity> Families { get; set; } = [];
     public ICollection<ShelterNeedsEntity>? ShelterNeeds { get; set; }
+
+    internal double GetDistance(double latitude, double longitude) =>
+        Math.Sqrt(Math.Pow(Latitude - latitude, 2) + Math.Pow(Longitude - longitude, 2));
 }

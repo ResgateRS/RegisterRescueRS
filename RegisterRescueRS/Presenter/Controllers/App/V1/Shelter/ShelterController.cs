@@ -27,16 +27,16 @@ public class ShelterController(IServiceProvider serviceProvider) : BaseControlle
     [PaginatedRequest("Id da ultima Doação", PaginationType.Cursor, typeof(Guid))]
     [HttpGet("ListDonations")]
     [MapToApiVersion("1.0")]
-    public async Task<IResponse<IEnumerable<DonationDTO>>> ListDonations() =>
+    public async Task<IResponse<IEnumerable<DonationDTO>>> ListDonations(double? latitude = null, double? longitude = null) =>
         await this.serviceProvider.GetRequiredService<ShelterService>()
-            .ListDonations();
+            .ListDonations(latitude, longitude);
 
     [SkipAuthentication]
     [PaginatedRequest("Id do ultimo Voluntário", PaginationType.Cursor, typeof(Guid))]
     [HttpGet("ListVolunteers")]
     [MapToApiVersion("1.0")]
-    public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers() =>
+    public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers(double? latitude = null, double? longitude = null) =>
         await this.serviceProvider.GetRequiredService<ShelterService>()
-            .ListVolunteers();
+            .ListVolunteers(latitude, longitude);
 }
 

@@ -20,31 +20,49 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
         return entity;
     }
 
-    public async Task<IEnumerable<ShelterNeedsEntity>> ListDonations()
+    public async Task<IEnumerable<ShelterNeedsEntity>> ListDonations(double? latitude, double? longitude)
     {
         DateTimeOffset? lastDate = await this._db.ShelterNeeds
                         .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
                         .Select(x => (DateTimeOffset?)x.UpdatedAt)
                         .FirstOrDefaultAsync();
 
-        return await this._db.ShelterNeeds
-            .Include(x => x.Shelter)
-            .Where(x => x.AcceptingDonations)
-            .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
-            .ToListAsync();
+        if (latitude != null && longitude != null)
+            return await this._db.ShelterNeeds
+                .Include(x => x.Shelter)
+                .Where(x => x.AcceptingDonations)
+                .OrderBy(x => x.Shelter.GetDistance(latitude.Value, longitude.Value))
+                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
+                .ToListAsync();
+        else
+            return await this._db.ShelterNeeds
+                .Include(x => x.Shelter)
+                .Where(x => x.AcceptingDonations)
+                .OrderBy(x => x.UpdatedAt)
+                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
+                .ToListAsync();
     }
 
-    public async Task<IEnumerable<ShelterNeedsEntity>> ListVolunteers()
+    public async Task<IEnumerable<ShelterNeedsEntity>> ListVolunteers(double? latitude, double? longitude)
     {
         DateTimeOffset? lastDate = await this._db.ShelterNeeds
                         .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
                         .Select(x => (DateTimeOffset?)x.UpdatedAt)
                         .FirstOrDefaultAsync();
 
-        return await this._db.ShelterNeeds
-            .Include(x => x.Shelter)
-            .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers)
-            .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
-            .ToListAsync();
+        if (latitude != null && longitude != null)
+            return await this._db.ShelterNeeds
+                .Include(x => x.Shelter)
+                .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers)
+                .OrderBy(x => x.Shelter.GetDistance(latitude.Value, longitude.Value))
+                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
+                .ToListAsync();
+        else
+            return await this._db.ShelterNeeds
+                .Include(x => x.Shelter)
+                .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers)
+                .OrderBy(x => x.UpdatedAt)
+                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
+                .ToListAsync();
     }
 }

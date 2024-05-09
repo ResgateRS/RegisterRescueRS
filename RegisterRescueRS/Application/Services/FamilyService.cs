@@ -37,7 +37,16 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
 
         var shelter = await this._serviceProvider.GetRequiredService<ShelterRepository>()
             .GetShelterById(_userSession.ShelterId) ??
-        throw new Exception("Abrigo não encontrado");
+            throw new Exception("Abrigo não encontrado");
+
+        if (dto.FamilyId != null || dto.FamilyId == Guid.Empty)
+        {
+            var familyEntity = await this._serviceProvider.GetRequiredService<FamilyRepository>()
+                .GetFamilyById(dto.FamilyId.Value) ??
+                    throw new Exception("Família não encontrada");
+            if (familyEntity.ShelterId != _userSession.ShelterId)
+                throw new Exception("Família não pertence ao abrigo");
+        }
 
         FamilyEntity family = new()
         {
