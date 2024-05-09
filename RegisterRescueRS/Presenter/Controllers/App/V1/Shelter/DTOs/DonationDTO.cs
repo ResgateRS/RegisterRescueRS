@@ -5,6 +5,7 @@ public class DonationDTO
 {
     public Guid ShelterId { get; set; }
     public bool AcceptingDonations { get; set; }
+    public string? ShelterName { get; set; }
     public string? Address { get; set; }
     public string? DonationDescription { get; set; }
     public double Latitude { get; set; }
@@ -14,6 +15,7 @@ public class DonationDTO
         new()
         {
             ShelterId = entity.ShelterId,
+            ShelterName = entity.Shelter.ShelterName,
             AcceptingDonations = entity.AcceptingDonations,
             Address = entity.Shelter.Address,
             DonationDescription = entity.DonationDescription,

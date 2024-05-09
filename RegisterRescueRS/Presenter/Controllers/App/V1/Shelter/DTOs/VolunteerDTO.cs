@@ -13,11 +13,13 @@ public class VolunteerDTO
     public string? VolunteersSubscriptionLink { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public string? ShelterName { get; set; }
 
     public static VolunteerDTO FromEntity(ShelterNeedsEntity entity) =>
         new()
         {
             ShelterId = entity.ShelterId,
+            ShelterName = entity.Shelter.ShelterName,
             AcceptingVolunteers = entity.AcceptingVolunteers,
             AcceptingDoctors = entity.AcceptingDoctors,
             AcceptingVeterinarians = entity.AcceptingVeterinarians,
