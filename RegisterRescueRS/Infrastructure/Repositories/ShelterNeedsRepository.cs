@@ -30,6 +30,7 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
         if (latitude != null && longitude != null)
             return await this._db.ShelterNeeds
                 .Include(x => x.Shelter)
+                .Where(x => x.Shelter.Login != "adm")
                 .Where(x => x.AcceptingDonations)
                 .OrderBy(x => x.Shelter.GetDistance(latitude.Value, longitude.Value))
                 .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
@@ -37,6 +38,7 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
         else
             return await this._db.ShelterNeeds
                 .Include(x => x.Shelter)
+                .Where(x => x.Shelter.Login != "adm")
                 .Where(x => x.AcceptingDonations)
                 .OrderBy(x => x.UpdatedAt)
                 .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
@@ -53,6 +55,7 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
         if (latitude != null && longitude != null)
             return await this._db.ShelterNeeds
                 .Include(x => x.Shelter)
+                .Where(x => x.Shelter.Login != "adm")
                 .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers)
                 .OrderBy(x => x.Shelter.GetDistance(latitude.Value, longitude.Value))
                 .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
@@ -60,6 +63,7 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
         else
             return await this._db.ShelterNeeds
                 .Include(x => x.Shelter)
+                .Where(x => x.Shelter.Login != "adm")
                 .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers)
                 .OrderBy(x => x.UpdatedAt)
                 .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
