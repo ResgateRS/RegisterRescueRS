@@ -31,6 +31,7 @@ public class AuthenticationMiddleware(RequestDelegate next)
                     throw new MessageException("Login expirado.", ResultType.ErrorLogin);
 
                 _userSession.ShelterId = userSession!.ShelterId;
+                _userSession.ShelterName = userSession!.ShelterName;
                 _userSession.Adm = userSession!.Adm;
             }
         }
