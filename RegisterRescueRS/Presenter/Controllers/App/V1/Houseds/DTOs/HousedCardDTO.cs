@@ -10,6 +10,7 @@ public class HousedCardDTO
     public bool Responsable { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
 
     internal static HousedCardDTO FromEntity(HousedEntity entity) =>
         new()
@@ -20,6 +21,7 @@ public class HousedCardDTO
             Responsable = entity.IsFamilyResponsable,
             Cellphone = entity.Cellphone,
             Latitude = entity.Family.Shelter.Latitude,
-            Longitude = entity.Family.Shelter.Longitude
+            Longitude = entity.Family.Shelter.Longitude,
+            UpdatedAt = entity.UpdatedAt
         };
 }

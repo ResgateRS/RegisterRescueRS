@@ -14,6 +14,7 @@ public class VolunteerDTO
     public double Latitude { get; set; }
     public double Longitude { get; set; }
     public string? ShelterName { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
 
     public static VolunteerDTO FromEntity(ShelterNeedsEntity entity) =>
         new()
@@ -28,6 +29,7 @@ public class VolunteerDTO
             VolunteersSubscriptionLink = entity.VolunteersSubscriptionLink,
             Avaliable = entity.Avaliable,
             Latitude = entity.Shelter.Latitude,
-            Longitude = entity.Shelter.Longitude
+            Longitude = entity.Shelter.Longitude,
+            UpdatedAt = entity.UpdatedAt
         };
 }

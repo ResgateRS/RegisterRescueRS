@@ -9,6 +9,7 @@ public class FamilyCardDTO
     public string? Cellphone { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
 
     internal static FamilyCardDTO FromEntity(FamilyEntity entity) =>
         new()
@@ -18,6 +19,7 @@ public class FamilyCardDTO
             Cellphone = entity.Houseds.First(x => x.IsFamilyResponsable).Cellphone,
             TotalPeopleNumber = entity.Houseds.Count(),
             Latitude = entity.Shelter.Latitude,
-            Longitude = entity.Shelter.Longitude
+            Longitude = entity.Shelter.Longitude,
+            UpdatedAt = entity.UpdatedAt
         };
 }

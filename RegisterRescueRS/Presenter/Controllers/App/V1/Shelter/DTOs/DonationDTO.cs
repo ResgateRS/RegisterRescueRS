@@ -10,6 +10,7 @@ public class DonationDTO
     public string? DonationDescription { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
 
     internal static DonationDTO FromEntity(ShelterNeedsEntity entity) =>
         new()
@@ -20,6 +21,7 @@ public class DonationDTO
             Address = entity.Shelter.Address,
             DonationDescription = entity.DonationDescription,
             Latitude = entity.Shelter.Latitude,
-            Longitude = entity.Shelter.Longitude
+            Longitude = entity.Shelter.Longitude,
+            UpdatedAt = entity.UpdatedAt
         };
 }
