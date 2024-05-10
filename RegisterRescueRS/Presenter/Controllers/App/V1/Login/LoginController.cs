@@ -17,5 +17,12 @@ public class LoginController(IServiceProvider serviceProvider) : BaseController(
     public async Task<IResponse<LoginResponseDTO>> Login(LoginRequestDTO dto) =>
         await this.serviceProvider.GetRequiredService<LoginService>()
             .handle(dto);
+
+    [HttpPost("Validate")]
+    [MapToApiVersion("1.0")]
+    public IResponse<ResponseDTO> Validate(ValidateRequestDTO dto) =>
+        this.serviceProvider.GetRequiredService<LoginService>()
+            .Validate(dto);
+
 }
 

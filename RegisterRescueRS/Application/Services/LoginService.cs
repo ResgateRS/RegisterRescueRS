@@ -50,4 +50,9 @@ public class LoginService(IServiceProvider serviceProvider, UserSession userSess
             return sBuilder.ToString();
         }
     }
+
+    public IResponse<ResponseDTO> Validate(ValidateRequestDTO dto) =>
+        JwtManager.IsValidToken(dto.Token) ?
+            Response<ResponseDTO>.Success(new ResponseDTO { Message = "Validated" }) :
+            Response<ResponseDTO>.Fail("Invalid token");
 }
