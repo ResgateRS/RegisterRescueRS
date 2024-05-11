@@ -13,10 +13,10 @@ namespace RegisterRescueRS.Domain.Application.Services;
 
 public class FamilyService(IServiceProvider serviceProvider, UserSession userSession) : BaseService(serviceProvider, userSession), IService
 {
-    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> ListFamilies(string? searchTerm)
+    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> ListFamilies(string? searchTerm, bool global)
     {
-        var families = await this._serviceProvider.GetRequiredService<FamilyRepository>()
-            .ListFamilies(searchTerm, _userSession.ShelterId);
+        IEnumerable<FamilyEntity> families = await this._serviceProvider.GetRequiredService<FamilyRepository>()
+            .ListFamilies(searchTerm, global ? null : _userSession.ShelterId);
 
         return Response<IEnumerable<FamilyCardDTO>>.Success(families.Select(FamilyCardDTO.FromEntity));
     }
