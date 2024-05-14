@@ -39,27 +39,29 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
             .GetShelterById(_userSession.ShelterId) ??
             throw new Exception("Abrigo não encontrado");
 
+        FamilyEntity? familyEntity = null;
+
         if (dto.FamilyId != null || dto.FamilyId == Guid.Empty)
         {
-            var familyEntity = await this._serviceProvider.GetRequiredService<FamilyRepository>()
+            familyEntity = await this._serviceProvider.GetRequiredService<FamilyRepository>()
                 .GetFamilyById(dto.FamilyId.Value) ??
                     throw new Exception("Família não encontrada");
             if (familyEntity.ShelterId != _userSession.ShelterId)
                 throw new Exception("Família não pertence ao abrigo");
         }
 
-        FamilyEntity family = new()
+        familyEntity ??= new()
         {
-            FamilyId = dto.FamilyId ?? Guid.Empty,
+            FamilyId = Guid.Empty,
             ShelterId = _userSession.ShelterId,
             RegisteredAt = DateTimeOffset.Now,
-            UpdatedAt = DateTimeOffset.Now,
         };
+        familyEntity.UpdatedAt = DateTimeOffset.Now;
 
         using (TransactionScope ts = new(TransactionScopeAsyncFlowOption.Enabled))
         {
-            family = await this._serviceProvider.GetRequiredService<FamilyRepository>()
-                .InsertOrUpdate(family);
+            familyEntity = await this._serviceProvider.GetRequiredService<FamilyRepository>()
+                .InsertOrUpdate(familyEntity);
 
             var houseds = dto.Houseds
                 .Select(x => new HousedEntity
@@ -68,7 +70,7 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
                     Cellphone = x.Cellphone,
                     Age = x.Age,
                     IsFamilyResponsable = x.Responsable,
-                    FamilyId = family.FamilyId,
+                    FamilyId = familyEntity.FamilyId,
                     RegisteredAt = DateTimeOffset.Now,
                     UpdatedAt = DateTimeOffset.Now,
                     HousedId = Guid.NewGuid()
@@ -80,7 +82,7 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
             ts.Complete();
         }
 
-        return Response<ResponseDTO>.Success(new ResponseDTO { Message = "Família cadastrada com sucesso" });
+        return Response<ResponseDTO>.Success(new ResponseDTO { Message = $"Família {(dto.FamilyId == null ? "cadastrada" : "atualizada")} com sucesso" });
     }
 
     public async Task<IResponse<FamilyDTO>> FamilyDetails(Guid familyId)
