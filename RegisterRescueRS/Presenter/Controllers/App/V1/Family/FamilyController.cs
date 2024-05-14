@@ -17,6 +17,12 @@ public class FamilyController(IServiceProvider serviceProvider) : BaseController
         await this.serviceProvider.GetRequiredService<FamilyService>()
             .PostFamily(dto);
 
+    [HttpDelete]
+    [MapToApiVersion("1.0")]
+    public async Task<IResponse<ResponseDTO>> DeleteFamily(Guid familyId) =>
+        await this.serviceProvider.GetRequiredService<FamilyService>()
+            .DeleteFamily(familyId);
+
     [PaginatedRequest("Id da ultima família", PaginationType.Cursor, typeof(Guid))]
     [HttpGet("List")]
     [MapToApiVersion("1.0")]

@@ -10,6 +10,7 @@ public class HousedEntity
     public bool IsFamilyResponsable { get; set; }
     public DateTimeOffset RegisteredAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
+    public bool Active { get; set; }
 
     public FamilyEntity Family { get; set; } = null!;
 }

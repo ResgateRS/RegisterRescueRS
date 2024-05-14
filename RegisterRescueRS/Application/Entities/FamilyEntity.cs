@@ -8,6 +8,7 @@ public class FamilyEntity
 
     public DateTimeOffset RegisteredAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
+    public bool Active { get; set; }
 
     public ICollection<HousedEntity> Houseds { get; set; } = [];
 }

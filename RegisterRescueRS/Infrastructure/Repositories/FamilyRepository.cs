@@ -30,10 +30,11 @@ public class FamilyRepository(RegisterRescueRSDbContext dbContext, PaginationDTO
                         .FirstOrDefaultAsync();
 
         return await _db.Families
+            .Where(x => x.Active)
             .Include(x => x.Houseds)
             .Include(x => x.Shelter)
             .Where(x => shelterId == null || x.ShelterId == shelterId)
-            .Where(x => searchTerm == null || x.Houseds.Any(p => p.Name.ToUpper().Contains(searchTerm.ToUpper())) || x.Houseds.Any(p => !string.IsNullOrEmpty(p.Cellphone) && p.Cellphone.ToUpper().Contains(searchTerm.ToUpper())))
+            .Where(x => searchTerm == null || x.Houseds.Any(p => p.Active && p.Name.ToUpper().Contains(searchTerm.ToUpper())) || x.Houseds.Any(p => p.Active && !string.IsNullOrEmpty(p.Cellphone) && p.Cellphone.ToUpper().Contains(searchTerm.ToUpper())))
             .OrderByDescending(x => x.RegisteredAt)
             .ApplyPagination(this._pagination, x => lastDate == null || x.RegisteredAt < lastDate)
             .ToListAsync();
@@ -41,7 +42,7 @@ public class FamilyRepository(RegisterRescueRSDbContext dbContext, PaginationDTO
 
     public async Task<FamilyEntity?> GetFamilyById(Guid familyId) =>
         await this._db.Families
-            .Include(x => x.Houseds)
             .Include(x => x.Shelter)
-            .FirstOrDefaultAsync(x => x.FamilyId == familyId);
+            .Include(x => x.Houseds.Where(x => x.Active))
+            .FirstOrDefaultAsync(x => x.Active && x.FamilyId == familyId);
 }

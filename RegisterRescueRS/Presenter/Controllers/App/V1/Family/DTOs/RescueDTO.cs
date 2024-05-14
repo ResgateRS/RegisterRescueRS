@@ -22,7 +22,7 @@ public class FamilyDTO
             Responsable = entity.Houseds.First(x => x.IsFamilyResponsable).Name,
             RegisteredAt = entity.RegisteredAt,
             UpdatedAt = entity.UpdatedAt,
-            Houseds = entity.Houseds.Select(HousedDTO.FromEntity),
+            Houseds = entity.Houseds.Where(x => x.Active).Select(HousedDTO.FromEntity),
             Latitude = entity.Shelter.Latitude,
             Longitude = entity.Shelter.Longitude
         };

@@ -43,6 +43,15 @@ namespace RegisterRescueRS.Infrastructure.Database
             modelBuilder.Entity<HousedEntity>()
                 .Property(e => e.IsFamilyResponsable)
                 .HasConversion(v => v ? 1 : 0, v => v == 1);
+            modelBuilder.Entity<HousedEntity>()
+                .Property(e => e.Active)
+                .HasConversion(v => v ? 1 : 0, v => v == 1)
+                .HasDefaultValue(true);
+
+            modelBuilder.Entity<FamilyEntity>()
+                .Property(e => e.Active)
+                .HasConversion(v => v ? 1 : 0, v => v == 1)
+                .HasDefaultValue(true);
 
             modelBuilder.Entity<ShelterEntity>()
                 .Property(e => e.Adm)

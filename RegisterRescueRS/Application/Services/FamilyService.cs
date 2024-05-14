@@ -55,6 +55,7 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
             FamilyId = Guid.Empty,
             ShelterId = _userSession.ShelterId,
             RegisteredAt = DateTimeOffset.Now,
+            Active = true
         };
         familyEntity.UpdatedAt = DateTimeOffset.Now;
 
@@ -73,7 +74,8 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
                     FamilyId = familyEntity.FamilyId,
                     RegisteredAt = DateTimeOffset.Now,
                     UpdatedAt = DateTimeOffset.Now,
-                    HousedId = Guid.NewGuid()
+                    HousedId = Guid.NewGuid(),
+                    Active = true
                 });
 
             await this._serviceProvider.GetRequiredService<HousedRepository>()
@@ -103,5 +105,34 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
             .ListFamilies(searchTerm);
 
         return Response<IEnumerable<FamilyCardDTO>>.Success(families.Select(FamilyCardDTO.FromEntity));
+    }
+
+    public async Task<IResponse<ResponseDTO>> DeleteFamily(Guid familyId)
+    {
+        if (Guid.Empty == familyId)
+            throw new Exception("Família não encontrada");
+
+        var family = await this._serviceProvider.GetRequiredService<FamilyRepository>()
+            .GetFamilyById(familyId) ??
+            throw new Exception("Família não encontrada");
+
+        if (family.ShelterId != _userSession.ShelterId)
+            throw new Exception("Família não pertence ao seu abrigo");
+
+        using (TransactionScope ts = new(TransactionScopeAsyncFlowOption.Enabled))
+        {
+            family.Active = false;
+            family.UpdatedAt = DateTimeOffset.Now;
+
+            await this._serviceProvider.GetRequiredService<FamilyRepository>()
+                .InsertOrUpdate(family);
+
+            await this._serviceProvider.GetRequiredService<HousedRepository>()
+                .UpsertRange([], familyId);
+
+            ts.Complete();
+        }
+
+        return Response<ResponseDTO>.Success(new ResponseDTO { Message = "Família desativada com sucesso" });
     }
 }

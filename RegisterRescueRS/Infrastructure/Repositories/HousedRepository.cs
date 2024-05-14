@@ -7,12 +7,17 @@ namespace RegisterRescueRS.Infrastructure.Repositories;
 
 public class HousedRepository(RegisterRescueRSDbContext dbContext, PaginationDTO pagination) : BaseRepository(dbContext, pagination)
 {
-    public async Task UpsertRange(IEnumerable<HousedEntity> houseds)
+    public async Task UpsertRange(IEnumerable<HousedEntity> houseds, Guid? familyId = null)
     {
-        var query = this._db.Houseds
-            .Where(x => x.FamilyId == houseds.First().FamilyId);
+        var entities = await this._db.Houseds
+            .Where(x => x.Active && x.FamilyId == (familyId ?? houseds.First().FamilyId))
+            .ToListAsync();
 
-        this._db.Houseds.RemoveRange(query);
+        entities.ForEach(x =>
+        {
+            x.Active = false;
+            x.UpdatedAt = DateTimeOffset.Now;
+        });
 
         await _db.Houseds.AddRangeAsync(houseds);
         await _db.SaveChangesAsync();
@@ -26,6 +31,7 @@ public class HousedRepository(RegisterRescueRSDbContext dbContext, PaginationDTO
                         .FirstOrDefaultAsync();
 
         return await _db.Houseds
+            .Where(x => x.Active && x.Family.Active)
             .Include(x => x.Family)
                 .ThenInclude(x => x.Shelter)
             .Where(x => searchTerm == null || x.Name.ToUpper().Contains(searchTerm.ToUpper()) || !string.IsNullOrEmpty(x.Cellphone) && x.Cellphone.ToUpper().Contains(searchTerm.ToUpper()))
