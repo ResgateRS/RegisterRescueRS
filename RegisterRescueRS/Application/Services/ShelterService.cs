@@ -88,19 +88,27 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
         });
     }
 
-    public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers(double? latitude, double? longitude)
+    public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers(double? latitude, double? longitude, string? searchTerm)
     {
         var entities = await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
-            .ListVolunteers(latitude, longitude);
+            .ListVolunteers(latitude, longitude, searchTerm);
 
         return Response<IEnumerable<VolunteerDTO>>.Success(entities.Select(VolunteerDTO.FromEntity));
     }
 
-    public async Task<IResponse<IEnumerable<DonationDTO>>> ListDonations(double? latitude, double? longitude)
+    public async Task<IResponse<IEnumerable<DonationDTO>>> ListDonations(double? latitude, double? longitude, string? searchTerm)
     {
         var entities = await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
-            .ListDonations(latitude, longitude);
+            .ListDonations(latitude, longitude, searchTerm);
 
         return Response<IEnumerable<DonationDTO>>.Success(entities.Select(DonationDTO.FromEntity));
+    }
+
+    public async Task<IResponse<ShelterNeedsDTO>> GetNeeds()
+    {
+        var entity = await this._serviceProvider.GetRequiredService<ShelterNeedsRepository>()
+            .GetShelterNeeds(_userSession.ShelterId);
+
+        return Response<ShelterNeedsDTO>.Success(entity == null ? new ShelterNeedsDTO() : ShelterNeedsDTO.FromEntity(entity));
     }
 }

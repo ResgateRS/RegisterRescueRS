@@ -20,53 +20,57 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
         return entity;
     }
 
-    public async Task<IEnumerable<ShelterNeedsEntity>> ListDonations(double? latitude, double? longitude)
+    public async Task<IEnumerable<ShelterNeedsEntity>> ListDonations(double? latitude, double? longitude, string? searchTerm)
     {
         DateTimeOffset? lastDate = await this._db.ShelterNeeds
                         .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
                         .Select(x => (DateTimeOffset?)x.UpdatedAt)
                         .FirstOrDefaultAsync();
 
+        var baseQuery = this._db.ShelterNeeds
+            .Include(x => x.Shelter)
+            .Where(x => x.Shelter.Login != "adm")
+            .Where(x => x.AcceptingDonations)
+            .Where(x => searchTerm == null || x.Shelter.ShelterName.Contains(searchTerm) || (x.DonationDescription != null && x.DonationDescription.Contains(searchTerm)));
+
         if (latitude != null && longitude != null)
-            return await this._db.ShelterNeeds
-                .Include(x => x.Shelter)
-                .Where(x => x.Shelter.Login != "adm")
-                .Where(x => x.AcceptingDonations)
-                .OrderBy(x => x.Shelter.GetDistance(latitude.Value, longitude.Value))
-                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
-                .ToListAsync();
+            baseQuery = baseQuery
+                .OrderBy(x => x.Shelter.GetDistance(latitude.Value, longitude.Value));
         else
-            return await this._db.ShelterNeeds
-                .Include(x => x.Shelter)
-                .Where(x => x.Shelter.Login != "adm")
-                .Where(x => x.AcceptingDonations)
-                .OrderBy(x => x.UpdatedAt)
+            baseQuery = baseQuery
+                .OrderBy(x => x.UpdatedAt);
+
+        return await baseQuery
                 .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
                 .ToListAsync();
     }
 
-    public async Task<IEnumerable<ShelterNeedsEntity>> ListVolunteers(double? latitude, double? longitude)
+    public async Task<IEnumerable<ShelterNeedsEntity>> ListVolunteers(double? latitude, double? longitude, string? searchTerm)
     {
         DateTimeOffset? lastDate = await this._db.ShelterNeeds
                         .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
                         .Select(x => (DateTimeOffset?)x.UpdatedAt)
                         .FirstOrDefaultAsync();
 
+        var baseQuery = this._db.ShelterNeeds
+            .Include(x => x.Shelter)
+            .Where(x => x.Shelter.Login != "adm")
+            .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers || x.Avaliable)
+            .Where(x => searchTerm == null || x.Shelter.ShelterName.Contains(searchTerm));
+
         if (latitude != null && longitude != null)
-            return await this._db.ShelterNeeds
-                .Include(x => x.Shelter)
-                .Where(x => x.Shelter.Login != "adm")
-                .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers)
-                .OrderBy(x => x.Shelter.GetDistance(latitude.Value, longitude.Value))
-                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
-                .ToListAsync();
+            baseQuery = baseQuery
+                .OrderBy(x => x.Shelter.GetDistance(latitude.Value, longitude.Value));
         else
-            return await this._db.ShelterNeeds
-                .Include(x => x.Shelter)
-                .Where(x => x.Shelter.Login != "adm")
-                .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers)
-                .OrderBy(x => x.UpdatedAt)
-                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
-                .ToListAsync();
+            baseQuery = baseQuery
+                .OrderBy(x => x.UpdatedAt);
+
+        return await baseQuery
+            .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
+            .ToListAsync();
     }
+
+    public async Task<ShelterNeedsEntity?> GetShelterNeeds(Guid shelterId) =>
+        await this._db.ShelterNeeds
+            .FirstOrDefaultAsync(x => x.ShelterId == shelterId);
 }
