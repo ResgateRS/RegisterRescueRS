@@ -76,7 +76,7 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
                 AcceptingDoctors = dto.AcceptingDoctors,
                 AcceptingVeterinarians = dto.AcceptingVeterinarians,
                 AcceptingDonations = dto.AcceptingDonations,
-                DonationDescription = dto.DonationDescription,
+                DonationDescription = dto.DonationsDescription,
                 Avaliable = dto.Avaliable,
                 VolunteersSubscriptionLink = dto.VolunteersSubscriptionLink,
                 UpdatedAt = DateTimeOffset.Now
