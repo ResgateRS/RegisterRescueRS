@@ -33,7 +33,7 @@ public class FamilyController(IServiceProvider serviceProvider) : BaseController
     [PaginatedRequest("Id da ultima família", PaginationType.Cursor, typeof(Guid))]
     [HttpGet("GlobalList")]
     [MapToApiVersion("1.0")]
-    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> GlobalListFamilies(string searchTerm) =>
+    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> GlobalListFamilies(string? searchTerm = null) =>
         await this.serviceProvider.GetRequiredService<FamilyService>()
                 .GlobalListFamilies(searchTerm);
 

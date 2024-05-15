@@ -99,7 +99,7 @@ public class FamilyService(IServiceProvider serviceProvider, UserSession userSes
         return Response<FamilyDTO>.Success(FamilyDTO.FromEntity(family));
     }
 
-    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> GlobalListFamilies(string searchTerm)
+    public async Task<IResponse<IEnumerable<FamilyCardDTO>>> GlobalListFamilies(string? searchTerm)
     {
         var families = await this._serviceProvider.GetRequiredService<FamilyRepository>()
             .ListFamilies(searchTerm);
