@@ -16,8 +16,8 @@ public class FamilyCardDTO
         new()
         {
             FamilyId = entity.FamilyId,
-            Responsable = $"{entity.Houseds.First(x => x.IsFamilyResponsable).Name}\n{entity.Shelter.ShelterName} - {entity.Shelter.Address}",
-            Cellphone = entity.Houseds.First(x => x.IsFamilyResponsable).Cellphone,
+            Responsable = $"{entity.Shelter.ShelterName} - {entity.Shelter.Address}",
+            Cellphone = $"{entity.Houseds.First(x => x.IsFamilyResponsable).Name} - {entity.Houseds.First(x => x.IsFamilyResponsable).Cellphone}",
             TotalPeopleNumber = entity.Houseds.Count(x => x.Active),
             Latitude = entity.Shelter.Latitude,
             Longitude = entity.Shelter.Longitude,
