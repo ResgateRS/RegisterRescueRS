@@ -49,7 +49,7 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
 
             return await baseQuery
                 .OrderBy(x => x.UpdatedAt)
-                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
+                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt > lastDate)
                 .ToListAsync();
         }
     }
@@ -83,7 +83,7 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
 
             return await baseQuery
                 .OrderBy(x => x.UpdatedAt)
-                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt < lastDate)
+                .ApplyPagination(this._pagination, x => lastDate == null || x.UpdatedAt > lastDate)
                 .ToListAsync();
         }
     }
