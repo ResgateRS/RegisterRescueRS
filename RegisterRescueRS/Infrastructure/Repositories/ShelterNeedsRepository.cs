@@ -30,7 +30,7 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
             .Include(x => x.Shelter)
             .Where(x => x.Shelter.Login != "adm")
             .Where(x => x.AcceptingDonations)
-            .Where(x => searchTerm == null || x.Shelter.ShelterName.Contains(searchTerm) || (x.DonationDescription != null && x.DonationDescription.Contains(searchTerm)));
+            .Where(x => searchTerm == null || x.Shelter.ShelterName.ToUpper().Contains(searchTerm.ToUpper()) || (x.DonationDescription != null && x.DonationDescription.ToUpper().Contains(searchTerm.ToUpper())));
 
         if (latitude != null && longitude != null)
         {
@@ -64,7 +64,7 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
             .Include(x => x.Shelter)
             .Where(x => x.Shelter.Login != "adm")
             .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers || x.Avaliable)
-            .Where(x => searchTerm == null || x.Shelter.ShelterName.Contains(searchTerm));
+            .Where(x => searchTerm == null || x.Shelter.ShelterName.ToUpper().Contains(searchTerm.ToUpper()));
 
         if (latitude != null && longitude != null)
         {
