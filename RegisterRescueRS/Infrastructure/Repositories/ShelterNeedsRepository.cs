@@ -23,8 +23,9 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
     public async Task<IEnumerable<ShelterNeedsEntity>> ListDonations(double? latitude, double? longitude, string? searchTerm)
     {
         ShelterNeedsEntity? lastEntity = await this._db.ShelterNeeds
-                        .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
-                        .FirstOrDefaultAsync();
+            .Include(x => x.Shelter)
+            .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
+            .FirstOrDefaultAsync();
 
         var baseQuery = this._db.ShelterNeeds
             .Include(x => x.Shelter)
@@ -57,8 +58,9 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
     public async Task<IEnumerable<ShelterNeedsEntity>> ListVolunteers(double? latitude, double? longitude, string? searchTerm)
     {
         ShelterNeedsEntity? lastEntity = await this._db.ShelterNeeds
-                        .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
-                        .FirstOrDefaultAsync();
+            .Include(x => x.Shelter)
+            .Where(x => x.ShelterId == (Guid?)this._pagination.cursor)
+            .FirstOrDefaultAsync();
 
         var baseQuery = this._db.ShelterNeeds
             .Include(x => x.Shelter)
