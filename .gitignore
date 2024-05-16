@@ -48,3 +48,5 @@ msbuild.wrn
 */truststore.jks
 
 */appsettings.json
+*/wallets
+.gitignore

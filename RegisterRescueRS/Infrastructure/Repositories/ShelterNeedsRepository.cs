@@ -65,7 +65,6 @@ public class ShelterNeedsRepository(RegisterRescueRSDbContext dbContext, Paginat
         var baseQuery = this._db.ShelterNeeds
             .Include(x => x.Shelter)
             .Where(x => x.Shelter.Login != "adm")
-            .Where(x => x.AcceptingVeterinarians || x.AcceptingDoctors || x.AcceptingVolunteers || x.Avaliable)
             .Where(x => searchTerm == null || x.Shelter.ShelterName.ToUpper().Contains(searchTerm.ToUpper()));
 
         if (latitude != null && longitude != null)
