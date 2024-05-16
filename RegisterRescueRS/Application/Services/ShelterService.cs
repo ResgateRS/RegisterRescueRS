@@ -111,4 +111,34 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
 
         return Response<ShelterNeedsDTO>.Success(entity == null ? new ShelterNeedsDTO() : ShelterNeedsDTO.FromEntity(entity));
     }
+
+    public async Task<IResponse<IEnumerable<ShelterDTO>>> GetUnverifieds()
+    {
+        if (!_userSession.Adm)
+            throw new Exception("Acesso negado");
+
+        var entities = await this._serviceProvider.GetRequiredService<ShelterRepository>()
+            .GetUnverifieds();
+
+        return Response<IEnumerable<ShelterDTO>>.Success(entities.Select(ShelterDTO.FromEntity));
+    }
+
+    public async Task<IResponse<ResponseDTO>> VerifyShelter(VerifyShelterDTO dto)
+    {
+        if (!_userSession.Adm)
+            throw new Exception("Acesso negado");
+
+        var shelter = await this._serviceProvider.GetRequiredService<ShelterRepository>()
+            .GetShelterById(dto.ShelterId) ??
+            throw new Exception("Abrigo não encontrado");
+
+        shelter.Verified = true;
+        shelter.Latitude = dto.Latitude;
+        shelter.Longitude = dto.Longitude;
+
+        await this._serviceProvider.GetRequiredService<ShelterRepository>()
+            .InsertOrUpdate(shelter);
+
+        return Response<ResponseDTO>.Success(new ResponseDTO { Message = "Abrigo verificado!" });
+    }
 }

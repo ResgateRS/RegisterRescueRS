@@ -57,6 +57,10 @@ namespace RegisterRescueRS.Infrastructure.Database
                 .Property(e => e.Adm)
                 .HasDefaultValue(false)
                 .HasConversion(v => v ? 1 : 0, v => v == 1);
+            modelBuilder.Entity<ShelterEntity>()
+                .Property(e => e.Verified)
+                .HasDefaultValue(false)
+                .HasConversion(v => v != null && v.Value ? 1 : 0, v => v == 1);
         }
 
     }

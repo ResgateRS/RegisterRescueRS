@@ -30,9 +30,15 @@ public class AuthenticationMiddleware(RequestDelegate next)
                 if (!JwtManager.IsValidToken(hashLogin, out UserSession? userSession))
                     throw new MessageException("Login expirado.", ResultType.ErrorLogin);
 
-                _userSession.ShelterId = userSession!.ShelterId;
-                _userSession.ShelterName = userSession!.ShelterName;
-                _userSession.Adm = userSession!.Adm;
+                if (userSession == null)
+                    throw new MessageException("Usuário não encontrado.", ResultType.ErrorLogin);
+                if (!userSession.Verified)
+                    throw new MessageException("Usuário não verificado.", ResultType.NotVerified);
+
+                _userSession.ShelterId = userSession.ShelterId;
+                _userSession.ShelterName = userSession.ShelterName;
+                _userSession.Adm = userSession.Adm;
+                _userSession.Verified = userSession.Verified;
             }
         }
 

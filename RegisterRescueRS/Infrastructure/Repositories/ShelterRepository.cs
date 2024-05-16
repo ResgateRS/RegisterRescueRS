@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RegisterRescueRS.Domain.Application.Entities;
 using RegisterRescueRS.Infrastructure.Database;
-using RegisterRescueRS.Presenter.Controllers.App.V1.DTOs;
 
 namespace RegisterRescueRS.Infrastructure.Repositories;
 
@@ -35,4 +34,9 @@ public class ShelterRepository(RegisterRescueRSDbContext dbContext) : IRepositor
     public async Task<bool> ShelterExistsById(Guid shelterId) =>
         await this._db.Shelters
             .AnyAsync(e => e.ShelterId == shelterId);
+
+    public async Task<IEnumerable<ShelterEntity>> GetUnverifieds() =>
+        await this._db.Shelters
+            .Where(e => e.Verified == false)
+            .ToListAsync();
 }

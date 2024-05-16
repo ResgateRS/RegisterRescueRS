@@ -44,5 +44,17 @@ public class ShelterController(IServiceProvider serviceProvider) : BaseControlle
     public async Task<IResponse<IEnumerable<VolunteerDTO>>> ListVolunteers(double? latitude = null, double? longitude = null, string? searchTerm = null) =>
         await this.serviceProvider.GetRequiredService<ShelterService>()
             .ListVolunteers(latitude, longitude, searchTerm);
+
+    [HttpGet("Unverifieds")]
+    [MapToApiVersion("1.0")]
+    public Task<IResponse<IEnumerable<ShelterDTO>>> GetUnverifieds() =>
+        this.serviceProvider.GetRequiredService<ShelterService>()
+            .GetUnverifieds();
+
+    [HttpPost("Verify")]
+    [MapToApiVersion("1.0")]
+    public Task<IResponse<ResponseDTO>> GetUnverifieds(VerifyShelterDTO dto) =>
+        this.serviceProvider.GetRequiredService<ShelterService>()
+            .VerifyShelter(dto);
 }
 

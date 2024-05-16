@@ -1,5 +1,4 @@
 using RegisterRescueRS.Auth;
-using RegisterRescueRS.Domain.Application.Entities;
 using RegisterRescueRS.Domain.Application.Services.Interfaces;
 using RegisterRescueRS.DTOs;
 using RegisterRescueRS.Infrastructure.Repositories;
@@ -24,9 +23,13 @@ public class LoginService(IServiceProvider serviceProvider, UserSession userSess
             .GetShelter(dto.Login, GetMd5Hash(dto.Password)) ??
                 throw new Exception("Usuário ou senha inválidos");
 
+        if (shelter.Verified == false || shelter.Verified == null)
+            return Response<LoginResponseDTO>.NotVerified();
+
         _userSession.ShelterId = shelter.ShelterId;
         _userSession.ShelterName = shelter.ShelterName;
         _userSession.Adm = shelter.Adm;
+        _userSession.Verified = shelter.Verified.Value;
 
         var jwt = _serviceProvider.GetRequiredService<JwtTool>();
         jwt.setUserData(userSession);

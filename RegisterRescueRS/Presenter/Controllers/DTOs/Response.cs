@@ -103,6 +103,9 @@ public class Response<T> : IResponse<T>
         };
     }
 
+    public static IResponse<T> NotVerified() =>
+        new Response<T> { Result = ResultType.NotVerified };
+
     public IResponse<T> SetSucessMessage(string message)
     {
         if (Result == ResultType.Ok)

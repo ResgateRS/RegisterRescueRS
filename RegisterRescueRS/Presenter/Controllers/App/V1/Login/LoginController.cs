@@ -23,6 +23,5 @@ public class LoginController(IServiceProvider serviceProvider) : BaseController(
     public IResponse<ResponseDTO> Validate(ValidateRequestDTO dto) =>
         this.serviceProvider.GetRequiredService<LoginService>()
             .Validate(dto);
-
 }
 

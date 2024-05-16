@@ -8,8 +8,10 @@ public class ShelterEntity
     public string ShelterName { get; set; } = null!;
     public string Address { get; set; } = null!;
     public bool Adm { get; set; }
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
+    public double Latitude { get; set; } = 0;
+    public double Longitude { get; set; } = 0;
+    public bool? Verified { get; set; }
+    public string? ShelterCellphone { get; set; } = null!;
 
     public ICollection<FamilyEntity> Families { get; set; } = [];
     public ICollection<ShelterNeedsEntity>? ShelterNeeds { get; set; }
