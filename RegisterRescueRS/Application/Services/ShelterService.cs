@@ -38,9 +38,8 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
             throw new Exception("Nome é necessário");
         if (string.IsNullOrEmpty(dto.Address))
             throw new Exception("Endereço é necessário");
-
-        if (!_userSession.Adm)
-            throw new Exception("Acesso negado");
+        if (string.IsNullOrEmpty(dto.ShelterCellphone))
+            throw new Exception("Telefone é necessário");
 
         ShelterEntity entity = new()
         {
@@ -49,8 +48,10 @@ public class ShelterService(IServiceProvider serviceProvider, UserSession userSe
             ShelterName = dto.Name,
             Address = dto.Address,
             Adm = false,
-            Latitude = dto.Latitude,
-            Longitude = dto.Longitude
+            Latitude = dto.Latitude ?? 0,
+            Longitude = dto.Longitude ?? 0,
+            Verified = false,
+            ShelterCellphone = dto.ShelterCellphone
         };
 
         await this._serviceProvider.GetRequiredService<ShelterRepository>()

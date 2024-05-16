@@ -7,7 +7,7 @@ public class ShelterDTO
     public Guid ShelterId { get; set; }
     public string ShelterName { get; set; } = null!;
     public string Address { get; set; } = null!;
-    public string ShelterCellphone { get; set; } = null!;
+    public string? ShelterCellphone { get; set; }
 
     internal static ShelterDTO FromEntity(ShelterEntity entity) =>
         new()
